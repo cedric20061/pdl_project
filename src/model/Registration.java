@@ -1,0 +1,102 @@
+package model;
+
+/**
+ * This class represents a registration in the system. It may contain information about the registrant and the session they are registered for.
+ * @author Cédric GUIDI && Baptiste DUCROCQ
+ * @version 1.0
+ */
+public class Registration {
+    private int sessionId;
+    private int studentId;
+    private int rank;
+    private String status;
+
+    /**
+     * Constructs a new Registration with the specified session ID, student ID, rank, and status.
+     * @param sessionId The ID of the session for which the registration is made.
+     * @param studentId The ID of the student who is registering.
+     * @param rank The rank of the registration (e.g., priority).
+     * @param status The status of the registration (e.g., pending, confirmed).
+     */
+    public Registration(int sessionId, int studentId, int rank, String status) {
+        this.sessionId = sessionId;
+        this.studentId = studentId;
+        this.rank = rank;
+        this.status = status;
+    }
+
+    /**
+     * Returns the ID of the session for which the registration is made.
+     * @return The ID of the session for which the registration is made.
+     */
+    public int getSessionId() {
+        return sessionId;
+    }
+
+    /**
+     * Returns the ID of the student who is registering.
+     * @return The ID of the student who is registering.
+     */
+    public int getStudentId() {
+        return studentId;
+    }
+
+    /**
+     * Returns the rank of the registration.
+     * @return The rank of the registration.
+     */
+    public int getRank() {
+        return rank;
+    }
+
+    /**
+     * Returns the status of the registration.
+     * @return The status of the registration.
+     */
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     * Sets the ID of the session for which the registration is made.
+     * @param sessionId The ID of the session for which the registration is made.
+     */
+    public void setSessionId(int sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    /**
+     * Sets the ID of the student who is registering.
+     * @param studentId The ID of the student who is registering.
+     */
+    public void setStudentId(int studentId) {
+        this.studentId = studentId;
+    }
+
+    /**
+     * Sets the rank of the registration.
+     * @param rank The rank of the registration.
+     */
+    public void setRank(int rank) {
+        this.rank = rank;
+    }
+
+    /**
+     * Sets the status of the registration.
+     * @param status The status of the registration.
+     */
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "Registration{" +
+                "sessionId=" + sessionId +
+                ", studentId=" + studentId +
+                ", rank=" + rank +
+                ", status='" + status + '\'' +
+                '}';
+    }
+
+}
