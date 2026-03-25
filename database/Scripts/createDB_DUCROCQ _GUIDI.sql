@@ -139,6 +139,8 @@ CREATE TABLE SESSIONS (
     start_time   DATE CONSTRAINT NN_start_time NOT NULL,
     end_time     DATE CONSTRAINT NN_end_time NOT NULL,
     max_capacity NUMBER(3) CONSTRAINT NN_max_capacity NOT NULL,
+    remaining_capacity NUMBER(3) CONSTRAINT NN_remaining_capacity NOT NULL,
+    room VARCHAR2(10) CONSTRAINT NN_room NOT NULL,
     specialization_id NUMBER(5) CONSTRAINT NN_specialization_id NOT NULL,
     campaign_id       NUMBER(5) CONSTRAINT NN_campaign_id NOT NULL,
     created_by  NUMBER(10) CONSTRAINT NN_created_by_SESSIONS NOT NULL,
