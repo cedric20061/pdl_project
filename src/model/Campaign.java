@@ -14,9 +14,11 @@ public class Campaign {
     private LocalDate endDate;
     private int maxChoices;
     private int promotion;
-    private int createdBy;
-    private int modifiedBy;
+    private String createdBy;
+    private String modifiedBy;
 
+
+    public Campaign(){}
     /**
      * Constructs a new Campaign with the specified ID and status.
      * @param id The unique identifier of the campaign.
@@ -28,7 +30,7 @@ public class Campaign {
      * @param createdBy The ID of the user who created the campaign.
      * @param modifiedBy The ID of the user who last modified the campaign.
      */
-    public Campaign(int id, String status, String startDate, String endDate, int maxChoices, int promotion, int createdBy, int modifiedBy) {
+    public Campaign(int id, String status, String startDate, String endDate, int maxChoices, int promotion, String createdBy, String modifiedBy) {
         this.id = id;
         this.status = status;
         this.startDate = LocalDate.parse(startDate);
@@ -91,7 +93,7 @@ public class Campaign {
      * Returns the ID of the user who created the campaign.
      * @return The ID of the user who created the campaign.
      */
-    public int getCreatedBy() {
+    public String getCreatedBy() {
         return createdBy;
     }
 
@@ -99,7 +101,7 @@ public class Campaign {
      * Returns the ID of the user who last modified the campaign.
      * @return The ID of the user who last modified the campaign.
      */
-    public int getModifiedBy() {
+    public String getModifiedBy() {
         return modifiedBy;
     }
 
@@ -155,7 +157,7 @@ public class Campaign {
      * Sets the ID of the user who created the campaign.
      * @param createdBy The ID of the user who created the campaign.
      */
-    public void setCreatedBy(int createdBy) {
+    public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 
@@ -163,22 +165,13 @@ public class Campaign {
      * Sets the ID of the user who last modified the campaign.
      * @param modifiedBy The ID of the user who last modified the campaign.
      */
-    public void setModifiedBy(int modifiedBy) {
+    public void setModifiedBy(String modifiedBy) {
         this.modifiedBy = modifiedBy;
     }
 
 
     @Override
     public String toString() {
-        return "Campaign{" +
-                "id=" + id +
-                ", status='" + status + '\'' +
-                ", startDate=" + startDate +
-                ", endDate=" + endDate +
-                ", maxChoices=" + maxChoices +
-                ", promotion=" + promotion +
-                ", createdBy=" + createdBy +
-                ", modifiedBy=" + modifiedBy +
-                '}';
+        return "Campagne - " + id + " - " + startDate + " à " + endDate;
     }
 }

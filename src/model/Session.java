@@ -9,15 +9,21 @@ import java.time.LocalTime;
  * @version 1.0
  */
 public class Session {
+
+    //TODO  ajouter le nombre de places restantes
     private int id;
     private LocalDate date;
     private LocalTime startTime;
     private LocalTime endTime;
     private int maxCapacity;
+    private int remainingCapacity;
+    private String room;
     private int specializationId;
     private int campaignId;
-    private int createdBy;
-    private int modifiedBy;
+    private String specializationName; // for display purposes only
+    private String campaignName;
+    private String createdBy;
+    private String modifiedBy;
 
     /**
      * Constructs a new Session with the specified parameters.
@@ -31,14 +37,18 @@ public class Session {
      * @param createdBy The ID of the user who created the session.
      * @param modifiedBy The ID of the user who last modified the session.
      */
-    public Session(int id, LocalDate date, LocalTime startTime, LocalTime endTime, int maxCapacity, int specializationId, int campaignId, int createdBy, int modifiedBy) {
+    public Session(int id, String date, String startTime, String endTime, int maxCapacity, int remainingCapacity, String room, int specializationId, String specializationName, int campaignId, String campaignName, String createdBy, String modifiedBy) {
         this.id = id;
-        this.date = date;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.date = LocalDate.parse(date);
+        this.startTime = LocalTime.parse(startTime);
+        this.endTime = LocalTime.parse(endTime);
         this.maxCapacity = maxCapacity;
+        this.remainingCapacity = remainingCapacity;
+        this.room = room;
         this.specializationId = specializationId;
+        this.specializationName = specializationName;
         this.campaignId = campaignId;
+        this.campaignName = campaignName;
         this.createdBy = createdBy;
         this.modifiedBy = modifiedBy;
     }
@@ -85,12 +95,44 @@ public class Session {
     }
 
     /**
+     * Returns the remaining capacity of the session.
+     * @return The remaining capacity of the session.
+     */
+    public int getRemainingCapacity() {
+        return remainingCapacity;
+    }
+
+    /**
+     * Returns the room of the session.
+     * @return The room of the session.
+     */
+    public String getRoom() {
+        return room;
+    }
+
+    /**
      * Returns the ID of the specialization associated with the session.
      * @return The ID of the specialization associated with the session.
      */
 
     public int getSpecializationId() {
         return specializationId;
+    }
+
+    /**
+     * Returns the name of the specialization associated with the session.
+     * @return The name of the specialization associated with the session.
+     */
+    public String getSpecializationName() {
+        return specializationName;
+    }
+
+    /**
+     * Returns the name of the campaign associated with the session.
+     * @return The name of the campaign associated with the session.
+     */
+    public String getCampaignName() {
+        return campaignName;
     }
 
     /**
@@ -105,7 +147,7 @@ public class Session {
      * Returns the ID of the user who created the session.
      * @return The ID of the user who created the session.
      */
-    public int getCreatedBy() {
+    public String getCreatedBy() {
         return createdBy;
     }
 
@@ -113,7 +155,7 @@ public class Session {
      * Returns the ID of the user who last modified the session.
      * @return The ID of the user who last modified the session.
      */
-    public int getModifiedBy() {
+    public String getModifiedBy() {
         return modifiedBy;
     }
 
@@ -156,6 +198,21 @@ public class Session {
     public void setMaxCapacity(int maxCapacity) {
         this.maxCapacity = maxCapacity;
     }
+    /** 
+    * Sets the remaining capacity of the session.
+    * @param remainingCapacity The remaining capacity of the session.
+    */
+    public void setRemainingCapacity(int remainingCapacity) {
+        this.remainingCapacity = remainingCapacity;
+    }
+
+    /**
+     * Sets the room of the session.
+     * @param room The room of the session.
+     */
+    public void setRoom(String room) {
+        this.room = room;
+    }
 
     /**
      * Sets the ID of the specialization associated with the session.
@@ -163,6 +220,14 @@ public class Session {
      */
     public void setSpecializationId(int specializationId) {
         this.specializationId = specializationId;
+    }
+
+    /**
+     * Sets the name of the specialization associated with the session.
+     * @param specializationName The name of the specialization associated with the session.
+     */
+    public void setSpecializationName(String specializationName) {
+        this.specializationName = specializationName;
     }
 
     /**
@@ -174,10 +239,18 @@ public class Session {
     }
 
     /**
+     * Sets the name of the campaign associated with the session.
+     * @param campaignName The name of the campaign associated with the session.
+     */
+    public void setCampaignName(String campaignName) {
+        this.campaignName = campaignName;
+    }
+
+    /**
      * Sets the ID of the user who created the session.
      * @param createdBy The ID of the user who created the session.
      */
-    public void setCreatedBy(int createdBy) {
+    public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 
@@ -185,22 +258,12 @@ public class Session {
      * Sets the ID of the user who last modified the session.
      * @param modifiedBy The ID of the user who last modified the session.
      */
-    public void setModifiedBy(int modifiedBy) {
+    public void setModifiedBy(String modifiedBy) {
         this.modifiedBy = modifiedBy;
     }
 
     @Override
     public String toString() {
-        return "Session{" +
-                "id=" + id +
-                ", date=" + date +
-                ", startTime=" + startTime +
-                ", endTime=" + endTime +
-                ", maxCapacity=" + maxCapacity +
-                ", specializationId=" + specializationId +
-                ", campaignId=" + campaignId +
-                ", createdBy=" + createdBy +
-                ", modifiedBy=" + modifiedBy +
-                '}';
+        return "Session - " + id + " - " + date + " - " + startTime + " to " + endTime;
     }
 }

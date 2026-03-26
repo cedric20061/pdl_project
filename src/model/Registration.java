@@ -8,6 +8,8 @@ package model;
 public class Registration {
     private int sessionId;
     private int studentId;
+    private String studentName;
+    private String studentEmail;
     private int rank;
     private String status;
 
@@ -18,9 +20,11 @@ public class Registration {
      * @param rank The rank of the registration (e.g., priority).
      * @param status The status of the registration (e.g., pending, confirmed).
      */
-    public Registration(int sessionId, int studentId, int rank, String status) {
+    public Registration(int sessionId, int studentId, String studentName, String studentEmail, int rank, String status) {
         this.sessionId = sessionId;
         this.studentId = studentId;
+        this.studentName = studentName;
+        this.studentEmail = studentEmail;
         this.rank = rank;
         this.status = status;
     }
@@ -58,6 +62,22 @@ public class Registration {
     }
 
     /**
+     * Returns the name of the student who is registering.
+     * @return The name of the student who is registering.
+     */
+    public String getStudentName() {
+        return studentName;
+    }
+
+    /**
+     * Returns the email of the student who is registering.
+     * @return The email of the student who is registering.
+     */
+    public String getStudentEmail() {
+        return studentEmail;
+    }
+
+    /**
      * Sets the ID of the session for which the registration is made.
      * @param sessionId The ID of the session for which the registration is made.
      */
@@ -88,6 +108,22 @@ public class Registration {
     public void setStatus(String status) {
         this.status = status;
     }
+
+        /**
+        * Sets the name of the student who is registering.
+        * @param studentName The name of the student who is registering.
+        */
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
+    }
+
+    /**
+     * Sets the email of the student who is registering.
+     * @param studentEmail The email of the student who is registering.
+     */ 
+    public void setStudentEmail(String studentEmail) {
+        this.studentEmail = studentEmail;
+    } 
 
     @Override
     public String toString() {
