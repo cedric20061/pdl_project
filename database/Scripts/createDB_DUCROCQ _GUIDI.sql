@@ -107,7 +107,6 @@ CREATE TABLE SPECIALIZATION (
         FOREIGN KEY (department_id)
         REFERENCES DEPARTMENT(department_id)
 );
-
 -- =============================================
 -- TABLE CAMPAIGN
 -- =============================================
@@ -120,16 +119,23 @@ CREATE TABLE CAMPAIGN (
     promotion   NUMBER(4) CONSTRAINT NN_promotion_CAMPAIGN NOT NULL,
     created_by  NUMBER(10) CONSTRAINT NN_created_by NOT NULL,
     modified_by NUMBER(10),
+    
     CONSTRAINT PK_CAMPAIGN PRIMARY KEY (campaign_id),
+
     CONSTRAINT FK_created_by_ADMINISTRATOR_admin_id
         FOREIGN KEY (created_by)
         REFERENCES ADMINISTRATOR(admin_id),
+
     CONSTRAINT FK_modified_by_ADMINISTRATOR_admin_id
         FOREIGN KEY (modified_by)
         REFERENCES ADMINISTRATOR(admin_id),
-    CONSTRAINT CK_campaign_dates CHECK (end_date >= start_date)
-);
 
+    CONSTRAINT CK_campaign_dates 
+        CHECK (end_date >= start_date),
+
+    CONSTRAINT CK_campaign_status 
+        CHECK (status IN ('OPEN', 'CLOSED', 'VALIDATED', 'ARCHIVED', 'PROCESSING', 'PLANNED'))
+);
 -- =============================================
 -- TABLE SESSIONS
 -- =============================================
@@ -160,7 +166,6 @@ CREATE TABLE SESSIONS (
         REFERENCES ADMINISTRATOR(admin_id),
     CONSTRAINT CK_session_time CHECK (end_time > start_time)
 );
-
 -- =============================================
 -- TABLE REGISTRATION
 -- =============================================
@@ -169,15 +174,21 @@ CREATE TABLE REGISTRATION (
     session_id NUMBER(10),
     preference_rank NUMBER(2) CONSTRAINT NN_preference_rank NOT NULL,
     status          VARCHAR2(20) CONSTRAINT NN_status_REG NOT NULL,
+
     CONSTRAINT PK_REGISTRATION PRIMARY KEY (student_id, session_id),
+
     CONSTRAINT FK_student_id_STUDENT_student_id
         FOREIGN KEY (student_id)
         REFERENCES STUDENT(student_id)
         ON DELETE CASCADE,
+
     CONSTRAINT FK_session_id_SESSIONS_session_id
         FOREIGN KEY (session_id)
         REFERENCES SESSIONS(session_id)
-        ON DELETE CASCADE
+        ON DELETE CASCADE,
+
+    CONSTRAINT CK_registration_status
+        CHECK (status IN ('PENDING', 'ACCEPTED', 'REJECTED'))
 );
 
 -- =============================================
