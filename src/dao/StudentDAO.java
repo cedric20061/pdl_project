@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import model.Student;
+import service.AppCache;
 
 public class StudentDAO extends ConnectionDAO {
     
@@ -18,6 +19,12 @@ public class StudentDAO extends ConnectionDAO {
     // GET BY ID (avec JOIN)
     // ==========================
     public Student get(int id) {
+        // Check cache first
+        Student cached = AppCache.getInstance().getStudentById(id);
+        if (cached != null) {
+            return cached;
+        }
+
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -33,7 +40,9 @@ public class StudentDAO extends ConnectionDAO {
             rs = ps.executeQuery();
 
             if (rs.next()) {
-                return map(rs);
+                Student student = map(rs);
+                AppCache.getInstance().addStudentToCache(student);
+                return student;
             }
 
         } catch (Exception e) {
@@ -50,6 +59,11 @@ public class StudentDAO extends ConnectionDAO {
     // GET ALL (avec JOIN)
     // ==========================
     public ArrayList<Student> getList() {
+        // Check cache first
+        if (AppCache.getInstance().getStudents() != null) {
+            return AppCache.getInstance().getStudents();
+        }
+
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -67,6 +81,9 @@ public class StudentDAO extends ConnectionDAO {
             while (rs.next()) {
                 list.add(map(rs));
             }
+
+            // Cache the result
+            AppCache.getInstance().setStudents(list);
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -97,7 +97,7 @@ public class UserDAO extends ConnectionDAO {
                     rs.getString("first_name"),
                     rs.getString("last_name"),
                     rs.getString("email"),
-                    rs.getString("level"),
+                    rs.getString("student_level"),
                     rs.getInt("promotion")
                 );
 

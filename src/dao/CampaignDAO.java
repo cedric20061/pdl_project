@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import model.Admin;
 import model.Campaign;
 import service.AppSession;
+import service.AppCache;
 
 public class CampaignDAO extends ConnectionDAO {
 
@@ -58,6 +59,9 @@ public class CampaignDAO extends ConnectionDAO {
                 campaign.setCreatedBy(admin.getLastName());
             }
 
+            // Invalidate cache
+            AppCache.getInstance().setCampaigns(null);
+
             return returnValue;
 
         } catch (Exception e) {
@@ -101,7 +105,10 @@ public class CampaignDAO extends ConnectionDAO {
             ps.setInt(6, admin.getId());
             ps.setInt(7, campaign.getId());
 
-            return ps.executeUpdate();
+            int result = ps.executeUpdate();
+            // Invalidate cache
+            AppCache.getInstance().setCampaigns(null);
+            return result;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -126,7 +133,10 @@ public class CampaignDAO extends ConnectionDAO {
             ps = con.prepareStatement(sql);
             ps.setInt(1, id);
 
-            return ps.executeUpdate();
+            int result = ps.executeUpdate();
+            // Invalidate cache
+            AppCache.getInstance().setCampaigns(null);
+            return result;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -141,6 +151,12 @@ public class CampaignDAO extends ConnectionDAO {
     // GET BY ID
     // ==========================
     public Campaign get(int id) {
+        // Check cache first
+        ArrayList<Campaign> cached = AppCache.getInstance().getCampaigns();
+        if (cached != null) {
+            return cached.stream().filter(c -> c.getId() == id).findFirst().orElse(null);
+        }
+
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -178,6 +194,11 @@ public class CampaignDAO extends ConnectionDAO {
     // GET ALL
     // ==========================
     public ArrayList<Campaign> getList() {
+        // Check cache first
+        if (AppCache.getInstance().getCampaigns() != null) {
+            return AppCache.getInstance().getCampaigns();
+        }
+
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -202,6 +223,9 @@ public class CampaignDAO extends ConnectionDAO {
                 list.add(map(rs));
             }
 
+            // Cache the result
+            AppCache.getInstance().setCampaigns(list);
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -211,6 +235,28 @@ public class CampaignDAO extends ConnectionDAO {
         }
 
         return list;
+    }
+
+    // ==========================
+    // GET ACTIVE CAMPAIGNS
+    // ==========================
+    /**
+     * Get all currently active campaigns (status = "OPEN").
+     * Filters the full cache in-memory.
+     * @return List of active campaigns
+     */
+    public ArrayList<Campaign> getActiveCampaigns() {
+        // Use full cache and filter in-memory
+        ArrayList<Campaign> allCampaigns = getList();
+        ArrayList<Campaign> active = new ArrayList<>();
+
+        for (Campaign c : allCampaigns) {
+            if ("OPEN".equals(c.getStatus())) {
+                active.add(c);
+            }
+        }
+
+        return active;
     }
 
     // ==========================

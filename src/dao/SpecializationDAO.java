@@ -4,6 +4,7 @@ import java.sql.*;
 import java.util.ArrayList;
 
 import model.Specialization;
+import service.AppCache;
 
 public class SpecializationDAO extends ConnectionDAO {
 
@@ -40,6 +41,9 @@ public class SpecializationDAO extends ConnectionDAO {
                 s.setId(rs.getInt(1));
             }
 
+            // Invalidate cache
+            AppCache.getInstance().setSpecializations(null);
+
             return returnValue;
 
         } catch (Exception e) {
@@ -74,7 +78,10 @@ public class SpecializationDAO extends ConnectionDAO {
             ps.setInt(5, s.getDepartmentId());
             ps.setInt(6, s.getId());
 
-            return ps.executeUpdate();
+            int result = ps.executeUpdate();
+            // Invalidate cache
+            AppCache.getInstance().setSpecializations(null);
+            return result;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -99,7 +106,10 @@ public class SpecializationDAO extends ConnectionDAO {
             ps = con.prepareStatement(sql);
             ps.setInt(1, id);
 
-            return ps.executeUpdate();
+            int result = ps.executeUpdate();
+            // Invalidate cache
+            AppCache.getInstance().setSpecializations(null);
+            return result;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -114,6 +124,12 @@ public class SpecializationDAO extends ConnectionDAO {
     // GET BY ID (avec JOIN)
     // ==========================
     public Specialization get(int id) {
+        // Check cache first
+        ArrayList<Specialization> cached = AppCache.getInstance().getSpecializations();
+        if (cached != null) {
+            return cached.stream().filter(s -> s.getId() == id).findFirst().orElse(null);
+        }
+
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -149,6 +165,11 @@ public class SpecializationDAO extends ConnectionDAO {
     // GET ALL (avec JOIN)
     // ==========================
     public ArrayList<Specialization> getList() {
+        // Check cache first
+        if (AppCache.getInstance().getSpecializations() != null) {
+            return AppCache.getInstance().getSpecializations();
+        }
+
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -169,6 +190,9 @@ public class SpecializationDAO extends ConnectionDAO {
             while (rs.next()) {
                 list.add(map(rs));
             }
+
+            // Cache the result
+            AppCache.getInstance().setSpecializations(list);
 
         } catch (Exception e) {
             e.printStackTrace();

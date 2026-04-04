@@ -4,6 +4,7 @@ import java.sql.*;
 import java.util.ArrayList;
 
 import model.Department;
+import service.AppCache;
 
 public class DepartmentDAO extends ConnectionDAO {
 
@@ -35,6 +36,9 @@ public class DepartmentDAO extends ConnectionDAO {
             if (rs.next()) {
                 department.setId(rs.getInt(1));
             }
+
+            // Invalidate cache
+            AppCache.getInstance().setDepartments(null);
 
             return returnValue;
 
@@ -70,7 +74,10 @@ public class DepartmentDAO extends ConnectionDAO {
             ps.setString(3, department.getHandleBy());
             ps.setInt(4, department.getId());
 
-            return ps.executeUpdate();
+            int result = ps.executeUpdate();
+            // Invalidate cache
+            AppCache.getInstance().setDepartments(null);
+            return result;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -95,7 +102,10 @@ public class DepartmentDAO extends ConnectionDAO {
             ps = con.prepareStatement(sql);
             ps.setInt(1, id);
 
-            return ps.executeUpdate();
+            int result = ps.executeUpdate();
+            // Invalidate cache
+            AppCache.getInstance().setDepartments(null);
+            return result;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -110,6 +120,12 @@ public class DepartmentDAO extends ConnectionDAO {
     // GET BY ID
     // ==========================
     public Department get(int id) {
+        // Check cache first
+        ArrayList<Department> cached = AppCache.getInstance().getDepartments();
+        if (cached != null) {
+            return cached.stream().filter(d -> d.getId() == id).findFirst().orElse(null);
+        }
+
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -141,6 +157,11 @@ public class DepartmentDAO extends ConnectionDAO {
     // GET ALL
     // ==========================
     public ArrayList<Department> getList() {
+        // Check cache first
+        if (AppCache.getInstance().getDepartments() != null) {
+            return AppCache.getInstance().getDepartments();
+        }
+
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -158,6 +179,9 @@ public class DepartmentDAO extends ConnectionDAO {
             while (rs.next()) {
                 list.add(map(rs));
             }
+
+            // Cache the result
+            AppCache.getInstance().setDepartments(list);
 
         } catch (Exception e) {
             e.printStackTrace();
