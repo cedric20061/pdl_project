@@ -8,6 +8,7 @@ import common.components.app.IconUtils;
 import common.components.app.UIStyle;
 import dao.UserDAO;
 import gui.backoffice.Main;
+import gui.frontend.StudentFrontendMain;
 import model.User;
 import service.AppSession;
 
@@ -181,8 +182,11 @@ public class LoginPage extends JFrame {
             JOptionPane.showMessageDialog(this, "Connexion réussie");
             dispose();
             if(AppSession.getInstance().getIsAdmin()) {
-                    new Main(); // ouvrir le backoffice
-                    return;
+                new Main(); // ouvrir le backoffice
+                return;
+            }else{
+                new StudentFrontendMain(); // ouvrir le frontend étudiant
+                return;
             }
         }else {
             errorLabel.setText("Identifiants incorrects");

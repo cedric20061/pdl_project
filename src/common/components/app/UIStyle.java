@@ -18,6 +18,7 @@ public class UIStyle {
     public static final Color DANGER_COLOR = new Color(220, 53, 69);         // rouge
     public static final Color SUCCESS_COLOR = new Color(40, 167, 69);        // vert
     public static final Color TEXT_COLOR = Color.BLACK;
+    public static final Color BACKGROUND_COLOR = Color.WHITE;
 
     // ===============================
     // Style général des boutons
@@ -122,6 +123,12 @@ public class UIStyle {
         field.setBackground(Color.WHITE);
         field.setForeground(TEXT_COLOR);
         field.setBorder(BorderFactory.createLineBorder(SECONDARY_COLOR));
+    }
+    public static void styleComboBox(JComboBox<?> combo) {
+        combo.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        combo.setMaximumSize(new Dimension(Integer.MAX_VALUE, 35));
+        combo.setBackground(Color.WHITE);
+        combo.setBorder(BorderFactory.createLineBorder(new Color(220, 220, 220)));
     }
 
     // ===============================
