@@ -240,16 +240,6 @@ public class RegistrationDAO extends ConnectionDAO {
         return list;
     }
 
-    //TODO Delete this methode
-    /**
-     * Find registrations by student ID (alias for getByStudent).
-     * @param studentId The student ID
-     * @return List of registrations for the student
-     */
-    public ArrayList<Registration> findByStudent(int studentId) {
-        return getByStudent(studentId);
-    }
-
     // ==========================
     // GET BY SESSION AND STUDENT
     // ==========================
@@ -322,7 +312,12 @@ public class RegistrationDAO extends ConnectionDAO {
             ps.setInt(1, studentId);
             ps.setInt(2, sessionId);
 
-            return ps.executeUpdate();
+            int result = ps.executeUpdate();
+
+            // Invalidate cache for this student
+            AppCache.getInstance().setRegistrationsByStudent(studentId, null);
+
+            return result;
 
         } catch (Exception e) {
             e.printStackTrace();
