@@ -142,18 +142,144 @@ public class SessionFilterService {
     }
 
     /**
-     * Filter sessions that are almost full (less than 25% remaining capacity).
+     * Filter sessions by time range (on any day).
      * 
      * @param sessions The sessions to filter
-     * @return Sessions with low remaining capacity
+     * @param startTimeStr The start time (format: "HH:mm")
+     * @param endTimeStr The end time (format: "HH:mm")
+     * @return Filtered list of sessions within the time range
      */
-    public ArrayList<Session> filterByAlmostFull(ArrayList<Session> sessions) {
+    public ArrayList<Session> filterByTimeRange(ArrayList<Session> sessions, String startTimeStr, String endTimeStr) {
+        if (startTimeStr == null || startTimeStr.isEmpty() || endTimeStr == null || endTimeStr.isEmpty()) {
+            return sessions;
+        }
+
+        java.time.LocalTime startTime = java.time.LocalTime.parse(startTimeStr);
+        java.time.LocalTime endTime = java.time.LocalTime.parse(endTimeStr);
+
         return sessions.stream()
                 .filter(s -> {
-                    double percentRemaining = (double) s.getRemainingCapacity() / s.getMaxCapacity();
-                    return percentRemaining > 0 && percentRemaining <= 0.25;
+                    // startTime and endTime are already LocalTime objects
+                    java.time.LocalTime sessionStart = s.getStartTime();
+                    java.time.LocalTime sessionEnd = s.getEndTime();
+                    
+                    if (sessionStart == null || sessionEnd == null) return false;
+                    
+                    // Session is within the requested time range
+                    return !sessionStart.isBefore(startTime) && !sessionEnd.isAfter(endTime);
                 })
                 .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    /**
+     * Filter sessions that start at a specific time.
+     * 
+     * @param sessions The sessions to filter
+     * @param startTimeStr The start time to match (format: "HH:mm")
+     * @return Filtered list of sessions starting at that time
+     */
+    public ArrayList<Session> filterByStartTime(ArrayList<Session> sessions, String startTimeStr) {
+        if (startTimeStr == null || startTimeStr.isEmpty()) {
+            return sessions;
+        }
+
+        java.time.LocalTime targetTime = java.time.LocalTime.parse(startTimeStr);
+        System.out.println(sessions);
+        return sessions.stream()
+                .filter(s -> {
+                    
+                    return s.getStartTime() != null && s.getStartTime().equals(targetTime); 
+                })
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    /**
+     * Check if a new session conflicts with existing student registrations.
+     * A conflict occurs when:
+     * - The new session is on the same day as an existing registration
+     * - The time slots overlap
+     * 
+     * @param studentId The student ID
+     * @param newSession The session the student wants to register for
+     * @return true if there's a conflict, false otherwise
+     */
+    public boolean checkScheduleConflict(int studentId, Session newSession) {
+        ArrayList<Registration> studentRegistrations = registrationDAO.getByStudent(studentId);
+        SessionDAO sessionDAO = new SessionDAO();
+
+        if (newSession.getStartTime() == null || newSession.getEndTime() == null || newSession.getDate() == null) {
+            return false;
+        }
+
+        java.time.LocalTime newStart = newSession.getStartTime();
+        java.time.LocalTime newEnd = newSession.getEndTime();
+        LocalDate newDate = newSession.getDate();
+
+        for (Registration reg : studentRegistrations) {
+            Session existingSession = sessionDAO.get(reg.getSessionId());
+            if (existingSession == null) continue;
+
+            // Check if same day
+            if (!existingSession.getDate().equals(newDate)) {
+                continue;  // Different day, no conflict
+            }
+
+            // Check if time overlaps
+            java.time.LocalTime existStart = existingSession.getStartTime();
+            java.time.LocalTime existEnd = existingSession.getEndTime();
+
+            if (existStart == null || existEnd == null) continue;
+
+            // Overlap occurs when: newStart < existEnd AND newEnd > existStart
+            if (newStart.isBefore(existEnd) && newEnd.isAfter(existStart)) {
+                return true;  // Conflict found!
+            }
+        }
+
+        return false;  // No conflicts
+    }
+
+    /**
+     * Get a user-friendly message for a schedule conflict.
+     * 
+     * @param studentId The student ID
+     * @param newSession The session with conflict
+     * @return Descriptive error message
+     */
+    public String getConflictMessage(int studentId, Session newSession) {
+        ArrayList<Registration> studentRegistrations = registrationDAO.getByStudent(studentId);
+        SessionDAO sessionDAO = new SessionDAO();
+
+        if (newSession.getStartTime() == null || newSession.getEndTime() == null || newSession.getDate() == null) {
+            return "";
+        }
+
+        java.time.LocalTime newStart = newSession.getStartTime();
+        java.time.LocalTime newEnd = newSession.getEndTime();
+        LocalDate newDate = newSession.getDate();
+
+        for (Registration reg : studentRegistrations) {
+            Session existingSession = sessionDAO.get(reg.getSessionId());
+            if (existingSession == null) continue;
+
+            if (!existingSession.getDate().equals(newDate)) {
+                continue;
+            }
+
+            java.time.LocalTime existStart = existingSession.getStartTime();
+            java.time.LocalTime existEnd = existingSession.getEndTime();
+
+            if (existStart == null || existEnd == null) continue;
+
+            if (newStart.isBefore(existEnd) && newEnd.isAfter(existStart)) {
+                return "Conflit d'horaire détecté !\n" +
+                       "Vous avez déjà une session inscrite le " + newDate + "\n" +
+                       "de " + existingSession.getStartTime() + " à " + existingSession.getEndTime() + "\n" +
+                       "qui chevauche cette session (" + newSession.getStartTime() + " à " + newSession.getEndTime() + ")";
+            }
+        }
+
+        return "";
     }
 
     // ===============================

@@ -161,7 +161,7 @@ public class SessionDetailsDialog extends JDialog {
             new TitledBorder("Inscription"),
             BorderFactory.createEmptyBorder(10, 10, 10, 10)
         ));
-        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 200));
+        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 250));
 
         // Check if already registered
         Registration existingReg = registrationDAO.findBySessionAndStudent(session.getId(), student.getId());
@@ -172,70 +172,91 @@ public class SessionDetailsDialog extends JDialog {
             alreadyRegisteredLabel.setForeground(new Color(76, 175, 80));
             panel.add(alreadyRegisteredLabel);
         } else {
-            // Get campaign info for max_choices validation
-            ArrayList<Registration> sameCampaignRegs = registrationDAO.findByStudentAndCampaign(student.getId(), session.getCampaignId());
+            // Check for schedule conflicts
+            boolean hasConflict = filterService.checkScheduleConflict(student.getId(), session);
             
-            // Get campaign to check max_choices
-            CampaignDAO campaignDAO = new CampaignDAO();
-            Campaign campaign = campaignDAO.get(session.getCampaignId());
-            
-            int maxChoices = campaign != null ? campaign.getMaxChoices() : 10;
-            int currentChoices = sameCampaignRegs.size();
-            
-            if (currentChoices >= maxChoices) {
-                // Max choices reached
-                JLabel maxReachedLabel = new JLabel("Vous avez atteint le nombre maximal d'inscriptions pour cette campagne (" + maxChoices + ")");
-                maxReachedLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-                maxReachedLabel.setForeground(new Color(220, 53, 69));
-                panel.add(maxReachedLabel);
+            if (hasConflict) {
+                // Display conflict message
+                String conflictMsg = filterService.getConflictMessage(student.getId(), session);
+                JTextArea conflictTextArea = new JTextArea(conflictMsg);
+                conflictTextArea.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+                conflictTextArea.setForeground(new Color(220, 53, 69));
+                conflictTextArea.setBackground(new Color(255, 240, 245));
+                conflictTextArea.setBorder(BorderFactory.createLineBorder(new Color(220, 53, 69)));
+                conflictTextArea.setLineWrap(true);
+                conflictTextArea.setWrapStyleWord(true);
+                conflictTextArea.setEditable(false);
+                conflictTextArea.setOpaque(true);
+                conflictTextArea.setMaximumSize(new Dimension(Integer.MAX_VALUE, 80));
+                conflictTextArea.setPreferredSize(new Dimension(600, 80));
+                
+                panel.add(conflictTextArea);
             } else {
-                // Show available ranks
-                ArrayList<Integer> usedRanks = new ArrayList<>();
-                for (Registration reg : sameCampaignRegs) {
-                    usedRanks.add(reg.getRank());
-                }
+                // Get campaign info for max_choices validation
+                ArrayList<Registration> sameCampaignRegs = registrationDAO.findByStudentAndCampaign(student.getId(), session.getCampaignId());
                 
-                // Preference rank input with available options
-                JPanel rankPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-                rankPanel.setBackground(Color.WHITE);
-                rankPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-                JLabel rankLabel = new JLabel("Rang de préférence:");
-                rankLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+                // Get campaign to check max_choices
+                CampaignDAO campaignDAO = new CampaignDAO();
+                Campaign campaign = campaignDAO.get(session.getCampaignId());
                 
-                // Create list of available ranks
-                ArrayList<Integer> availableRanks = new ArrayList<>();
-                for (int i = 1; i <= maxChoices; i++) {
-                    if (!usedRanks.contains(i)) {
-                        availableRanks.add(i);
+                int maxChoices = campaign != null ? campaign.getMaxChoices() : 10;
+                int currentChoices = sameCampaignRegs.size();
+                
+                if (currentChoices >= maxChoices) {
+                    // Max choices reached
+                    JLabel maxReachedLabel = new JLabel("Vous avez atteint le nombre maximal d'inscriptions pour cette campagne (" + maxChoices + ")");
+                    maxReachedLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+                    maxReachedLabel.setForeground(new Color(220, 53, 69));
+                    panel.add(maxReachedLabel);
+                } else {
+                    // Show available ranks
+                    ArrayList<Integer> usedRanks = new ArrayList<>();
+                    for (Registration reg : sameCampaignRegs) {
+                        usedRanks.add(reg.getRank());
                     }
-                }
-                
-                JComboBox<Integer> rankCombo = new JComboBox<>();
-                for (Integer rank : availableRanks) {
-                    rankCombo.addItem(rank);
-                }
-                rankCombo.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-                
-                rankPanel.add(rankLabel);
-                rankPanel.add(rankCombo);
-                if (!availableRanks.isEmpty()) {
-                    rankPanel.add(new JLabel("(" + availableRanks.size() + " rang(s) disponible(s))"));
-                }
-                panel.add(rankPanel);
+                    
+                    // Preference rank input with available options
+                    JPanel rankPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+                    rankPanel.setBackground(Color.WHITE);
+                    rankPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+                    JLabel rankLabel = new JLabel("Rang de préférence:");
+                    rankLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+                    
+                    // Create list of available ranks
+                    ArrayList<Integer> availableRanks = new ArrayList<>();
+                    for (int i = 1; i <= maxChoices; i++) {
+                        if (!usedRanks.contains(i)) {
+                            availableRanks.add(i);
+                        }
+                    }
+                    
+                    JComboBox<Integer> rankCombo = new JComboBox<>();
+                    for (Integer rank : availableRanks) {
+                        rankCombo.addItem(rank);
+                    }
+                    rankCombo.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+                    
+                    rankPanel.add(rankLabel);
+                    rankPanel.add(rankCombo);
+                    if (!availableRanks.isEmpty()) {
+                        rankPanel.add(new JLabel("(" + availableRanks.size() + " rang(s) disponible(s))"));
+                    }
+                    panel.add(rankPanel);
 
-                // Register button
-                JButton registerButton = new JButton("S'inscrire");
-                registerButton.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-                registerButton.setBackground(new Color(76, 175, 80));
-                registerButton.setForeground(Color.WHITE);
-                registerButton.setFocusPainted(false);
-                registerButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-                registerButton.addActionListener(e -> {
-                    int rank = (Integer) rankCombo.getSelectedItem();
-                    registerForSession(rank);
-                });
-                panel.add(Box.createVerticalStrut(10));
-                panel.add(registerButton);
+                    // Register button
+                    JButton registerButton = new JButton("S'inscrire");
+                    registerButton.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+                    registerButton.setBackground(new Color(76, 175, 80));
+                    registerButton.setForeground(Color.WHITE);
+                    registerButton.setFocusPainted(false);
+                    registerButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+                    registerButton.addActionListener(e -> {
+                        int rank = (Integer) rankCombo.getSelectedItem();
+                        registerForSession(rank);
+                    });
+                    panel.add(Box.createVerticalStrut(10));
+                    panel.add(registerButton);
+                }
             }
         }
 

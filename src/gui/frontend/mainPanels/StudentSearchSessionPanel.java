@@ -123,7 +123,6 @@ public class StudentSearchSessionPanel extends JPanel {
         ));
 
         searchField.setToolTipText("Rechercher une session...");
-        searchField.setText("Rechercher une session...");
 
         card.add(searchField);
         card.add(Box.createVerticalStrut(15));
@@ -264,25 +263,30 @@ public class StudentSearchSessionPanel extends JPanel {
     // ===========================
     private void updateFilteredSessions() {
         filteredSessions = new ArrayList<>(availableSessions);
-
         // Apply search
         String searchText = searchField.getText();
         filteredSessions = filterService.searchBySpecialization(filteredSessions, searchText);
-
         // Apply specialization filter
         String selectedSpec = (String) specializationFilter.getSelectedItem();
         if (selectedSpec != null && !selectedSpec.equals("Toutes")) {
             filteredSessions = filterService.searchBySpecialization(filteredSessions, selectedSpec);
         }
 
-        // Apply sorting
-        String sortOption = (String) sortComboBox.getSelectedItem();
-        if (sortOption != null) {
-            if (sortOption.contains("Capacité")) {
+        // Apply time filter or sorting
+        String timeOrSort = (String) sortComboBox.getSelectedItem();
+        if (timeOrSort != null && !timeOrSort.equals("Toutes")) {
+            // Check if it's a time filter (e.g., "08:30") or a sort option
+            if (timeOrSort.matches("\\d{2}:\\d{2}")) {
+                // It's a time - filter sessions that start at this time
+                filteredSessions = filterService.filterByStartTime(filteredSessions, timeOrSort);
+            } else if (timeOrSort.contains("Capacité")) {
+                // Sort by capacity
                 filteredSessions = filterService.sortByCapacity(filteredSessions);
-            } else if (sortOption.contains("Date et Capacité")) {
+            } else if (timeOrSort.contains("Date et Capacité")) {
+                // Sort by date and capacity
                 filteredSessions = filterService.sortByDateAndCapacity(filteredSessions);
             } else {
+                // Default: sort by date
                 filteredSessions = filterService.sortByDate(filteredSessions);
             }
         }
@@ -352,7 +356,6 @@ public class StudentSearchSessionPanel extends JPanel {
             student,
             session,
             () -> {
-                // Refresh sessions after registration
                 availableSessions = filterService.getAvailableSessionsForStudent(student);
                 updateFilteredSessions();
             }

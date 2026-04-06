@@ -24,126 +24,159 @@ public class StudentRegistrationCard extends JPanel {
 
     private Registration registration;
     private Session session;
-    //private Student student;
     private Runnable onModified;
 
     public StudentRegistrationCard(Student student, Registration registration, Session session, Runnable onModified) {
-        //this.student = student;
         this.registration = registration;
         this.session = session;
         this.onModified = onModified;
 
-        setLayout(new BorderLayout(10, 0));
+        setLayout(new BorderLayout(15, 0));
         setBackground(Color.WHITE);
+
         setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(200, 200, 200), 1),
-            BorderFactory.createEmptyBorder(12, 15, 12, 15)
+                BorderFactory.createLineBorder(new Color(230, 230, 230)),
+                BorderFactory.createEmptyBorder(12, 15, 12, 15)
         ));
-        setMaximumSize(new Dimension(Integer.MAX_VALUE, 110));
-        setPreferredSize(new Dimension(Integer.MAX_VALUE, 110));
+
+        setMaximumSize(new Dimension(Integer.MAX_VALUE, 120));
+        setAlignmentX(Component.LEFT_ALIGNMENT);
 
         createContent();
     }
 
     private void createContent() {
-        // Left section: Rank badge
-        JPanel rankPanel = new JPanel();
-        rankPanel.setLayout(new BoxLayout(rankPanel, BoxLayout.Y_AXIS));
-        rankPanel.setBackground(Color.WHITE);
-        rankPanel.setPreferredSize(new Dimension(60, 100));
-
-        JLabel rankLabel = new JLabel("Préférence #" + registration.getRank());
-        rankLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        rankLabel.setForeground(UIStyle.PRIMARY_COLOR);
-        rankPanel.add(Box.createVerticalGlue());
-        rankPanel.add(rankLabel);
-        rankPanel.add(Box.createVerticalGlue());
-
-        add(rankPanel, BorderLayout.WEST);
-
-        // Center section: Session info
-        JPanel infoPanel = new JPanel();
-        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
-        infoPanel.setBackground(Color.WHITE);
-
-        if (session != null) {
-            // Specialization and Campaign
-            JLabel specLabel = new JLabel(session.getSpecializationName() + " - " + session.getCampaignName());
-            specLabel.setFont(new Font("Segoe UI", Font.BOLD, 13));
-            specLabel.setForeground(UIStyle.TEXT_COLOR);
-            infoPanel.add(specLabel);
-
-            // Date and Time
-            JLabel dateTimeLabel = new JLabel(
-                session.getDate().toString() + " | " +
-                session.getStartTime() + " - " + session.getEndTime()
-            );
-            dateTimeLabel.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-            dateTimeLabel.setForeground(new Color(120, 120, 120));
-            infoPanel.add(dateTimeLabel);
-
-            // Room
-            JLabel roomLabel = new JLabel("Salle: " + session.getRoom());
-            roomLabel.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-            roomLabel.setForeground(new Color(120, 120, 120));
-            infoPanel.add(roomLabel);
-        } else {
-            JLabel noSessionLabel = new JLabel("Session non trouvée (ID: " + registration.getSessionId() + ")");
-            noSessionLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-            noSessionLabel.setForeground(UIStyle.DANGER_COLOR);
-            infoPanel.add(noSessionLabel);
-        }
-
-        add(infoPanel, BorderLayout.CENTER);
-
-        // Right section: Status and actions
-        JPanel rightPanel = new JPanel();
-        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
-        rightPanel.setBackground(Color.WHITE);
-
-        // Status badge
-        JLabel statusLabel = new JLabel(getStatusText());
-        statusLabel.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        statusLabel.setForeground(getStatusColor());
-        rightPanel.add(statusLabel);
-
-        // Action button
-        JButton cancelButton = new JButton("Annuler cette inscription");
-        cancelButton.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-        cancelButton.setBackground(UIStyle.DANGER_COLOR);
-        cancelButton.setForeground(Color.WHITE);
-        cancelButton.setFocusPainted(false);
-        cancelButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-        cancelButton.addActionListener(e -> cancelRegistration());
-        rightPanel.add(Box.createVerticalStrut(10));
-        rightPanel.add(cancelButton);
-
-        add(rightPanel, BorderLayout.EAST);
+        add(createRankBadge(), BorderLayout.WEST);
+        add(createInfoPanel(), BorderLayout.CENTER);
+        add(createRightPanel(), BorderLayout.EAST);
     }
 
+    // ===========================
+    // 🎯 RANK BADGE (beaucoup plus visuel)
+    // ===========================
+    private JPanel createRankBadge() {
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setOpaque(false);
+        panel.setPreferredSize(new Dimension(60, 80));
+
+        JLabel badge = new JLabel("#" + registration.getRank(), SwingConstants.CENTER);
+        badge.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        badge.setForeground(Color.WHITE);
+        badge.setOpaque(true);
+        badge.setBackground(UIStyle.PRIMARY_COLOR);
+        badge.setPreferredSize(new Dimension(40, 40));
+
+        panel.add(badge);
+        return panel;
+    }
+
+    // ===========================
+    // 📄 INFOS
+    // ===========================
+    private JPanel createInfoPanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setOpaque(false);
+
+        if (session != null) {
+            JLabel title = new JLabel(session.getSpecializationName());
+            title.setFont(new Font("Segoe UI", Font.BOLD, 14));
+            title.setForeground(UIStyle.TEXT_COLOR);
+
+            JLabel campaign = new JLabel(session.getCampaignName());
+            campaign.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+            campaign.setForeground(new Color(120, 120, 120));
+
+            JLabel datetime = new JLabel(
+                    session.getDate() + " • " +
+                    session.getStartTime() + " - " + session.getEndTime()
+            );
+            datetime.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+            datetime.setForeground(new Color(100, 100, 100));
+
+            JLabel room = new JLabel("Salle " + session.getRoom());
+            room.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+            room.setForeground(new Color(100, 100, 100));
+
+            panel.add(title);
+            panel.add(Box.createVerticalStrut(2));
+            panel.add(campaign);
+            panel.add(Box.createVerticalStrut(6));
+            panel.add(datetime);
+            panel.add(room);
+
+        } else {
+            JLabel error = new JLabel("Session introuvable");
+            error.setForeground(UIStyle.DANGER_COLOR);
+            panel.add(error);
+        }
+
+        return panel;
+    }
+
+    // ===========================
+    // 👉 RIGHT PANEL
+    // ===========================
+    private JPanel createRightPanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setOpaque(false);
+
+        panel.add(createStatusBadge());
+        panel.add(Box.createVerticalGlue());
+        panel.add(createCancelButton());
+
+        return panel;
+    }
+
+    // ===========================
+    // 🟢 STATUS BADGE
+    // ===========================
+    private JLabel createStatusBadge() {
+        JLabel status = new JLabel(getStatusText(), SwingConstants.CENTER);
+        status.setFont(new Font("Segoe UI", Font.BOLD, 11));
+        status.setOpaque(true);
+        status.setBorder(BorderFactory.createEmptyBorder(4, 10, 4, 10));
+
+        Color bg = getStatusColor();
+        status.setBackground(bg);
+        status.setForeground(Color.WHITE);
+
+        return status;
+    }
+
+    private JButton createCancelButton() {
+        JButton btn = new JButton("Annuler");
+        btn.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        btn.setForeground(UIStyle.DANGER_COLOR);
+        btn.setBackground(Color.WHITE);
+        btn.setBorder(BorderFactory.createLineBorder(UIStyle.DANGER_COLOR));
+        btn.setFocusPainted(false);
+        btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        btn.addActionListener(e -> cancelRegistration());
+
+        return btn;
+    }
+
+    // ===========================
+    // 🎨 STATUS LOGIC
+    // ===========================
     private String getStatusText() {
         switch (registration.getStatus()) {
-            case "CONFIRMED":
-                return "✓ Confirmée";
-            case "PENDING":
-                return "⏳ En attente";
-            case "REJECTED":
-                return "✗ Rejetée";
-            default:
-                return registration.getStatus();
+            case "CONFIRMED": return "Confirmée";
+            case "PENDING": return "En attente";
+            case "REJECTED": return "Rejetée";
+            default: return registration.getStatus();
         }
     }
 
     private Color getStatusColor() {
         switch (registration.getStatus()) {
-            case "CONFIRMED":
-                return UIStyle.SUCCESS_COLOR;
-            case "PENDING":
-                return new Color(255, 165, 0); // Orange
-            case "REJECTED":
-                return UIStyle.DANGER_COLOR;
-            default:
-                return UIStyle.SECONDARY_COLOR;
+            case "CONFIRMED": return UIStyle.SUCCESS_COLOR;
+            case "PENDING": return new Color(255, 165, 0);
+            case "REJECTED": return UIStyle.DANGER_COLOR;
+            default: return UIStyle.SECONDARY_COLOR;
         }
     }
 
