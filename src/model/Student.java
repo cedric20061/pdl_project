@@ -61,4 +61,5 @@ public class Student extends User {
     public String toString() {
         return super.toString() + " (Student, Level: " + level + ", Promotion: " + promotion + ")";
     }
+
 }

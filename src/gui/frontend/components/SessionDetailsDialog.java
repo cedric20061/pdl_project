@@ -1,17 +1,19 @@
 package gui.frontend.components;
 
+import dao.CampaignDAO;
+import dao.RegistrationDAO;
+import gui.frontend.services.SessionFilterService;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
+
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
-
-import gui.frontend.services.SessionFilterService;
 import model.Campaign;
 import model.Registration;
 import model.Session;
 import model.Student;
-import dao.CampaignDAO;
-import dao.RegistrationDAO;
+
 
 /**
  * Dialog that shows detailed information about a session.
@@ -310,7 +312,7 @@ public class SessionDetailsDialog extends JDialog {
             );
             return;
         }
-
+        
         // Create registration
         Registration registration = new Registration(
             session.getId(),
