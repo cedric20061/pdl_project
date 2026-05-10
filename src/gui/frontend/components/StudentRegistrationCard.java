@@ -154,8 +154,8 @@ public class StudentRegistrationCard extends JPanel {
         btn.setFocusPainted(false);
         btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-        // Disable cancel button if status is VALIDATED
-        if ("VALIDATED".equals(registration.getStatus())) {
+        // Disable cancel button if status is ACCEPTED
+        if ("ACCEPTED".equals(registration.getStatus())) {
             btn.setEnabled(false);
             btn.setForeground(new Color(150, 150, 150));
             btn.setText("Validée");
@@ -176,7 +176,6 @@ public class StudentRegistrationCard extends JPanel {
             case "PENDING": return "En attente";
             case "REJECTED": return "Rejetée";
             case "ACCEPTED": return "Acceptée";
-            case "VALIDATED": return "Validée";
             
             default: return registration.getStatus();
         }
@@ -188,7 +187,6 @@ public class StudentRegistrationCard extends JPanel {
             case "PENDING": return new Color(255, 165, 0);
             case "REJECTED": return UIStyle.DANGER_COLOR;
             case "ACCEPTED": return UIStyle.SUCCESS_COLOR;  // Darker green for accepted
-            case "VALIDATED": return UIStyle.SUCCESS_COLOR;  // Darker green for validated
             default: return UIStyle.SECONDARY_COLOR;
         }
     }

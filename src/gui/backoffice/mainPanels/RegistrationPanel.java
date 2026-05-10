@@ -8,6 +8,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
 import gui.backoffice.editorFrames.CreateRegistration;
+import gui.backoffice.editorFrames.EditRegistrationDialog;
 import gui.backoffice.editorFrames.ValidateRegistrationsDialog;
 import gui.backoffice.utils.PanelsUtils;
 import model.Registration;
@@ -110,7 +111,13 @@ public class RegistrationPanel extends JPanel {
         UIStyle.styleFilterButton(searchButton);
         content.add(searchButton);
 
-        // 📊 Compteur
+        // � Bouton Actualiser
+        JButton refreshButton = new JButton("Actualiser");
+        UIStyle.styleFilterButton(refreshButton);
+        content.add(refreshButton);
+        refreshButton.addActionListener(e -> refreshTable());
+
+        // �📊 Compteur
         countLabel = new JLabel(registrations.size() + " inscription(s)");
         UIStyle.styleSmallLabel(countLabel);
         countLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 5, 10));
@@ -143,7 +150,7 @@ public class RegistrationPanel extends JPanel {
                 registration.getStudentEmail(),
                 registration.getRank(),
                 registration.getStatus(),
-                "Actions" // Actions column
+                "Actions"
             });
         }
 
@@ -159,14 +166,27 @@ public class RegistrationPanel extends JPanel {
 
         this.add(wrapper);
 
-        // Actions
+        // Edit column
         table.getColumn("Actions").setCellRenderer(new ButtonRenderer());
         table.getColumn("Actions").setCellEditor(
             new ButtonEditor(
                 new JCheckBox(),
-                null,
                 row -> {
-                    // seulement suppression possible
+                    int session_id = (int) table.getValueAt(row, 0);
+                    int student_id = (int) table.getValueAt(row, 1);
+                    
+                    JFrame parentFrame = SwingUtilities.getWindowAncestor(this) instanceof JFrame 
+                        ? (JFrame) SwingUtilities.getWindowAncestor(this) 
+                        : null;
+                    
+                    if (parentFrame != null) {
+                        EditRegistrationDialog dialog = new EditRegistrationDialog(parentFrame, student_id, session_id);
+                        dialog.setVisible(true);
+                        // Refresh table after dialog closes
+                        refreshTable();
+                    }
+                },
+                row -> {
                     int session_id = (int) table.getValueAt(row, 0);
                     int student_id = (int) table.getValueAt(row, 1);
                     String name = (String) table.getValueAt(row, 2);
@@ -178,7 +198,6 @@ public class RegistrationPanel extends JPanel {
                         JOptionPane.YES_NO_OPTION
                     );
                     if (confirm == JOptionPane.YES_OPTION) {
-                        // supprimer de la DB
                         int isDelete = registrationDao.delete(student_id, session_id);
                         if(isDelete > 0) {
                             JOptionPane.showMessageDialog(null, "Inscription supprimée avec succès.");
@@ -192,14 +211,14 @@ public class RegistrationPanel extends JPanel {
             )
         );
 
-        // cacher SessionID et StudentID
+        // Hide SessionID and StudentID columns
+        table.getColumnModel().getColumn(0).setMinWidth(0);
+        table.getColumnModel().getColumn(0).setMaxWidth(0);
+        table.getColumnModel().getColumn(0).setWidth(0);
+
         table.getColumnModel().getColumn(1).setMinWidth(0);
         table.getColumnModel().getColumn(1).setMaxWidth(0);
         table.getColumnModel().getColumn(1).setWidth(0);
-
-        table.getColumnModel().getColumn(2).setMinWidth(0);
-        table.getColumnModel().getColumn(2).setMaxWidth(0);
-        table.getColumnModel().getColumn(2).setWidth(0);
 
         countLabel.setText(model.getRowCount() + " inscription(s)");
     }
@@ -287,6 +306,32 @@ public class RegistrationPanel extends JPanel {
         if (parentFrame != null) {
             ValidateRegistrationsDialog dialog = new ValidateRegistrationsDialog(parentFrame);
             dialog.setVisible(true);
+            // Refresh table after dialog closes
+            refreshTable();
         }
+    }
+
+    // ==========================
+    // REFRESH TABLE
+    // ==========================
+    private void refreshTable() {
+        ArrayList<Registration> registrations = registrationDao.getList();
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.setRowCount(0);
+
+        for (Registration registration : registrations) {
+            model.addRow(new Object[]{
+                registration.getSessionId(),
+                registration.getStudentId(),
+                registration.getStudentName(),
+                registration.getStudentEmail(),
+                registration.getRank(),
+                registration.getStatus(),
+                "✏️ Éditer",
+                "🗑️ Supprimer"
+            });
+        }
+
+        countLabel.setText(model.getRowCount() + " inscription(s)");
     }
 }

@@ -66,7 +66,7 @@ public class CreateOrEditCampaign extends JFrame {
         // ==========================
         // Status
         // ==========================
-        String[] statuses = {"ALL", "OPEN", "CLOSED", "VALIDATED", "ARCHIVED", "PROCESSING", "PLANNED"};
+        String[] statuses = {"OPEN", "CLOSED", "VALIDATED", "PLANNED"};
         statusCombo = new JComboBox<>(statuses);
 
         panel.add(Box.createVerticalStrut(10));

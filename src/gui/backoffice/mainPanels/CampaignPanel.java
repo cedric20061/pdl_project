@@ -82,7 +82,7 @@ public class CampaignPanel extends JPanel {
 
         // 📌 Status
         statusCombo = new JComboBox<>(
-            new String[]{"ALL", "OPEN", "CLOSED", "VALIDATED", "ARCHIVED", "PROCESSING", "PLANNED"}
+            new String[]{"ALL", "OPEN", "CLOSED", "VALIDATED", "PLANNED"}
         );
         UIStyle.styleComboBox(statusCombo, 150);
 

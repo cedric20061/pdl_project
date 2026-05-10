@@ -42,6 +42,7 @@ public class RegistrationDAO extends ConnectionDAO {
         } catch (Exception e) {
             if (e.getMessage().contains("ORA-00001")) {
                 System.out.println("Inscription déjà existante !");
+                return -1; // Indicate duplicate registration
             } else {
                 e.printStackTrace();
             }

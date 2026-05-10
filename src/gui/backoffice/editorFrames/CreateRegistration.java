@@ -143,16 +143,22 @@ public class CreateRegistration extends JFrame {
         CampaignDAO campaignDAO = new CampaignDAO();
         Campaign currentCampaign = campaignDAO.get(selectedSession.getCampaignId());
         RegistrationDAO registrationDao = new RegistrationDAO();
-        int nbrStudentSession = registrationDao.getByStudent(studentId).size();
-        if(nbrStudentSession >= currentCampaign.getMaxChoices()){
-            JOptionPane.showMessageDialog(this, "Cet étudiant est déja inscrit à un nombre max de session", "Erreur", JOptionPane.ERROR_MESSAGE);
+        
+        // Get only registrations for the current campaign
+        int nbrStudentSessionInCampaign = registrationDao.findByStudentAndCampaign(studentId, selectedSession.getCampaignId()).size();
+        if(nbrStudentSessionInCampaign >= currentCampaign.getMaxChoices()){
+            JOptionPane.showMessageDialog(this, "Cet étudiant a déjà atteint le nombre maximum d'inscriptions pour cette campagne (" + currentCampaign.getMaxChoices() + ")", "Erreur", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        int rank = nbrStudentSession + 1;
+        int rank = nbrStudentSessionInCampaign + 1;
         String status = "PENDING";
 
 
         int isAdd = registrationDao.add(studentId, sessionId, rank, status);
+        if(isAdd == -1){
+            JOptionPane.showMessageDialog(this, "Cet étudiant est déjà inscrit à cette session !", "Erreur", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         if(isAdd == 0){
             JOptionPane.showMessageDialog(this, "Erreur lors de l'ajout !");
             return;
