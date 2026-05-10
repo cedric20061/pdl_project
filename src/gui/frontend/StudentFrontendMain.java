@@ -5,18 +5,22 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.SwingConstants;
 
 import gui.frontend.mainPanels.StudentRegistrationsPanel;
 import gui.frontend.mainPanels.StudentSearchSessionPanel;
-import gui.frontend.components.StudentSidebarButton;
+import gui.frontend.components.HeaderNavButton;
 import model.Student;
 import service.AppSession;
 
@@ -80,71 +84,116 @@ public class StudentFrontendMain extends JFrame {
         // Show search page by default
         cardLayout.show(pages, "search");
     }
-
-    // ===========================
-    // HEADER CREATION
-    // ===========================
     private void createHeader() {
-        JPanel header = new JPanel();
-        header.setLayout(new BorderLayout());
-        header.setBackground(new Color(34, 139, 230)); // Bleu primaire
-        header.setPreferredSize(new Dimension(1200, 70));
-        header.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+        JPanel header = new JPanel(new BorderLayout());
+        header.setBackground(new Color(44, 62, 80));
+        header.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        header.setPreferredSize(new Dimension(1200, 65));
 
-        // LEFT: Logo and Title
-        JPanel leftPanel = new JPanel();
-        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.X_AXIS));
-        leftPanel.setOpaque(false);
+        // ===========================
+        // LEFT : LOGO / TITLE
+        // ===========================
+        JPanel left = new JPanel();
+        left.setLayout(new BoxLayout(left, BoxLayout.X_AXIS));
+        left.setOpaque(false);
 
-        JLabel titleLabel = new JLabel("Ent-Wish");
-        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        titleLabel.setForeground(Color.WHITE);
+        JLabel title = new JLabel("Ent-Wish");
+        title.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        title.setForeground(Color.WHITE);
 
-        leftPanel.add(titleLabel);
-        header.add(leftPanel, BorderLayout.WEST);
+        left.add(title);
 
-        // CENTER: Navigation Buttons
-        JPanel centerPanel = new JPanel();
-        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.X_AXIS));
-        centerPanel.setOpaque(false);
+        // petit séparateur visuel
+        left.add(Box.createHorizontalStrut(20));
+        left.add(createDivider());
 
-        // Search button
-        StudentSidebarButton searchBtn = new StudentSidebarButton(
-            "Rechercher Sessions",
-            e -> cardLayout.show(pages, "search")
+        header.add(left, BorderLayout.WEST);
+
+        // ===========================
+        // CENTER : NAVIGATION (style onglets)
+        // ===========================
+        JPanel nav = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 0));
+        nav.setOpaque(false);
+
+        // Boutons avec icônes
+        HeaderNavButton searchBtn = new HeaderNavButton(
+            "Rechercher",
+            "/icons/search.png",
+            "search"
         );
 
-        // Registrations button
-        StudentSidebarButton registrationsBtn = new StudentSidebarButton(
-            "Mes Inscriptions",
-            e -> cardLayout.show(pages, "registrations")
+        HeaderNavButton registrationsBtn = new HeaderNavButton(
+            "Inscriptions",
+            "/icons/registration.png",
+            "registrations"
         );
 
-        centerPanel.add(searchBtn);
-        centerPanel.add(Box.createHorizontalStrut(15));
-        centerPanel.add(registrationsBtn);
+        // Ajout
+        HeaderNavButton[] buttons = { searchBtn, registrationsBtn };
 
-        header.add(centerPanel, BorderLayout.CENTER);
+        for (HeaderNavButton btn : buttons) {
+            nav.add(btn);
+        }
 
-        // RIGHT: User Info
-        JPanel rightPanel = new JPanel();
-        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.X_AXIS));
-        rightPanel.setOpaque(false);
+        header.add(nav, BorderLayout.CENTER);
 
-        JLabel welcomeLabel = new JLabel(String.format("Bienvenue, %s", currentStudent.getFirstName()));
-        welcomeLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        welcomeLabel.setForeground(Color.WHITE);
+        final HeaderNavButton[] activeButton = { searchBtn };
+        activeButton[0].setActive(true);
 
-        JLabel infoLabel = new JLabel(String.format("| Promo: %d • Niveau: %s", currentStudent.getPromotion(), currentStudent.getLevel()));
-        infoLabel.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-        infoLabel.setForeground(new Color(200, 220, 255));
+        for (HeaderNavButton btn : buttons) {
+            btn.addActionListener(e -> {
+                cardLayout.show(pages, btn.getPageName());
 
-        rightPanel.add(welcomeLabel);
-        rightPanel.add(Box.createHorizontalStrut(10));
-        rightPanel.add(infoLabel);
+                activeButton[0].setActive(false);
+                btn.setActive(true);
+                activeButton[0] = btn;
+            });
+        }
+                // ===========================
+        // RIGHT : USER INFO
+        // ===========================
+        JPanel right = new JPanel();
+        right.setLayout(new BoxLayout(right, BoxLayout.X_AXIS));
+        right.setOpaque(false);
 
-        header.add(rightPanel, BorderLayout.EAST);
+        JPanel userInfo = new JPanel();
+        userInfo.setLayout(new BoxLayout(userInfo, BoxLayout.Y_AXIS));
+        userInfo.setOpaque(false);
+
+        JLabel welcome = new JLabel("Bonjour, " + currentStudent.getFirstName());
+        welcome.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        welcome.setForeground(Color.WHITE);
+
+        JLabel details = new JLabel(
+            "Promo " + currentStudent.getPromotion() + " • " + currentStudent.getLevel()
+        );
+        details.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        details.setForeground(new Color(200, 220, 255));
+
+        userInfo.add(welcome);
+        userInfo.add(details);
+
+        right.add(userInfo);
+        right.add(Box.createHorizontalStrut(15));
+
+        // bouton déconnexion (optionnel mais UX ++)
+        // JButton logout = new JButton("⎋");
+        // logout.setForeground(Color.WHITE);
+        // logout.setBackground(new Color(255, 255, 255, 40));
+        // logout.setBorder(BorderFactory.createEmptyBorder(6, 10, 6, 10));
+
+
+        // right.add(logout);
+
+        header.add(right, BorderLayout.EAST);
 
         container.add(header, BorderLayout.NORTH);
+    }
+
+    private JComponent createDivider() {
+        JSeparator sep = new JSeparator(SwingConstants.VERTICAL);
+        sep.setForeground(new Color(255, 255, 255, 80));
+        sep.setPreferredSize(new Dimension(1, 20));
+        return sep;
     }
 }

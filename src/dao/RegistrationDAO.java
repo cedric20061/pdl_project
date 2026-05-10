@@ -88,6 +88,45 @@ public class RegistrationDAO extends ConnectionDAO {
         return 0;
     }
 
+    /**
+     * Update only the status of a registration.
+     * @param studentId The student ID
+     * @param sessionId The session ID
+     * @param newStatus The new status value
+     * @return The number of rows affected
+     */
+    public int updateStatus(int studentId, int sessionId, String newStatus) {
+        Connection con = null;
+        PreparedStatement ps = null;
+
+        try {
+            con = DriverManager.getConnection(URL, LOGIN, PASS);
+
+            String sql = "UPDATE REGISTRATION SET status = ? "
+                       + "WHERE student_id = ? AND session_id = ?";
+
+            ps = con.prepareStatement(sql);
+
+            ps.setString(1, newStatus);
+            ps.setInt(2, studentId);
+            ps.setInt(3, sessionId);
+
+            int result = ps.executeUpdate();
+
+            // Invalidate cache for this student
+            AppCache.getInstance().setRegistrationsByStudent(studentId, null);
+
+            return result;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try { if (ps != null) ps.close(); } catch (Exception ignored) {}
+            try { if (con != null) con.close(); } catch (Exception ignored) {}
+        }
+        return 0;
+    }
+
     // ==========================
     // DELETE
     // ==========================

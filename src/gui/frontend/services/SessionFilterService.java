@@ -184,7 +184,7 @@ public class SessionFilterService {
         }
 
         java.time.LocalTime targetTime = java.time.LocalTime.parse(startTimeStr);
-        System.out.println(sessions);
+        
         return sessions.stream()
                 .filter(s -> {
                     

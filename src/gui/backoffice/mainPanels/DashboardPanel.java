@@ -1,10 +1,20 @@
 package gui.backoffice.mainPanels;
 
 import java.awt.*;
+import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 import common.components.app.UIStyle;
 import service.AppSession;
+import dao.StudentDAO;
+import dao.SessionDAO;
+import dao.DepartmentDAO;
+import dao.SpecializationDAO;
+import dao.RegistrationDAO;
+import model.Student;
+import model.Session;
+import model.Registration;
 
 public class DashboardPanel extends JPanel {
 
@@ -48,10 +58,21 @@ public class DashboardPanel extends JPanel {
         JPanel cardsPanel = new JPanel(new GridLayout(1, 4, 20, 0));
         cardsPanel.setBackground(Color.WHITE);
 
-        cardsPanel.add(createStatCard("Étudiants", 120, new Color(66, 133, 244)));
-        cardsPanel.add(createStatCard("Sessions", 15, new Color(52, 168, 83)));
-        cardsPanel.add(createStatCard("Départements", 5, new Color(251, 188, 5)));
-        cardsPanel.add(createStatCard("Dominantes", 10, new Color(234, 67, 53)));
+        // Get real data from database
+        StudentDAO studentDAO = new StudentDAO();
+        SessionDAO sessionDAO = new SessionDAO();
+        DepartmentDAO departmentDAO = new DepartmentDAO();
+        SpecializationDAO specializationDAO = new SpecializationDAO();
+
+        int studentCount = studentDAO.getList().size();
+        int sessionCount = sessionDAO.getList().size();
+        int departmentCount = departmentDAO.getList().size();
+        int specializationCount = specializationDAO.getList().size();
+
+        cardsPanel.add(createStatCard("Étudiants", studentCount, new Color(66, 133, 244)));
+        cardsPanel.add(createStatCard("Sessions", sessionCount, new Color(52, 168, 83)));
+        cardsPanel.add(createStatCard("Départements", departmentCount, new Color(251, 188, 5)));
+        cardsPanel.add(createStatCard("Dominantes", specializationCount, new Color(234, 67, 53)));
 
         this.add(cardsPanel);
     }
@@ -107,20 +128,52 @@ public class DashboardPanel extends JPanel {
         recentPanel.setBackground(Color.WHITE);
         recentPanel.setBorder(BorderFactory.createTitledBorder("Dernières inscriptions"));
 
-        String[] columns = {"ID", "Étudiant", "Session", "Statut"};
-        Object[][] data = {
-            {1, "Alice Dupont", "Session 1", "Confirmée"},
-            {2, "Bob Martin", "Session 2", "En attente"},
-            {3, "Claire Moreau", "Session 3", "Confirmée"},
-            {4, "David Petit", "Session 1", "Annulée"}
-        };
+        String[] columns = {"ID", "Étudiant", "Session", "Rang", "Statut"};
+        DefaultTableModel model = new DefaultTableModel(columns, 0);
 
-        JTable table = new JTable(data, columns);
+        // Get real data from database
+        RegistrationDAO registrationDAO = new RegistrationDAO();
+        StudentDAO studentDAO = new StudentDAO();
+        SessionDAO sessionDAO = new SessionDAO();
+
+        ArrayList<Registration> registrations = registrationDAO.getList();
+        
+        // Show only the 10 most recent registrations (sorted by ID descending)
+        int limit = Math.min(10, registrations.size());
+        for (int i = Math.max(0, registrations.size() - limit); i < registrations.size(); i++) {
+            Registration reg = registrations.get(i);
+            Session session = sessionDAO.get(reg.getSessionId());
+            Student student = studentDAO.get(reg.getStudentId());
+
+            String sessionName = (session != null) ? session.getSpecializationName() : "Session #" + reg.getSessionId();
+            String studentName = (student != null) ? student.getFirstName() + " " + student.getLastName() : "Étudiant #" + reg.getStudentId();
+
+            String statusDisplay = getStatusDisplay(reg.getStatus());
+
+            model.addRow(new Object[]{
+                reg.getSessionId(),
+                studentName,
+                sessionName,
+                reg.getRank(),
+                statusDisplay
+            });
+        }
+
+        JTable table = new JTable(model);
         UIStyle.styleTable(table);
         JScrollPane scroll = new JScrollPane(table);
 
         recentPanel.add(scroll, BorderLayout.CENTER);
         this.add(recentPanel);
+    }
+
+    private String getStatusDisplay(String status) {
+        switch (status) {
+            case "PENDING": return "En attente";
+            case "REJECTED": return "Rejetée";
+            case "ACCEPTED": return "Validée";
+            default: return status;
+        }
     }
 
     // ==========================

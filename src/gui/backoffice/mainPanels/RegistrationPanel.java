@@ -8,6 +8,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
 import gui.backoffice.editorFrames.CreateRegistration;
+import gui.backoffice.editorFrames.ValidateRegistrationsDialog;
 import gui.backoffice.utils.PanelsUtils;
 import model.Registration;
 import model.Session;
@@ -40,7 +41,15 @@ public class RegistrationPanel extends JPanel {
             e -> new CreateRegistration(table) // Formulaire d'ajout
         );
 
-        this.add(Box.createVerticalStrut(15));
+        // Add validate registrations button
+        JButton validateButton = createValidateButton();
+        JPanel buttonWrapper = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        buttonWrapper.setOpaque(false);
+        buttonWrapper.setBorder(BorderFactory.createEmptyBorder(5, 20, 5, 20));
+        buttonWrapper.add(validateButton);
+        this.add(buttonWrapper);
+
+        this.add(Box.createVerticalStrut(10));
         createToolbar(registrations);
         this.add(Box.createVerticalStrut(15));
         createTable(registrations);
@@ -257,5 +266,27 @@ public class RegistrationPanel extends JPanel {
         }
 
         countLabel.setText(model.getRowCount() + " inscription(s)");
+    }
+
+    // ==========================
+    // VALIDATE BUTTON
+    // ==========================
+    private JButton createValidateButton() {
+        JButton validateButton = new JButton("Valider les inscriptions d'une campagne");
+        UIStyle.stylePrimaryButton(validateButton);
+        validateButton.setIcon(null);
+        validateButton.addActionListener(e -> openValidateDialog());
+        return validateButton;
+    }
+
+    private void openValidateDialog() {
+        JFrame parentFrame = SwingUtilities.getWindowAncestor(this) instanceof JFrame 
+            ? (JFrame) SwingUtilities.getWindowAncestor(this) 
+            : null;
+        
+        if (parentFrame != null) {
+            ValidateRegistrationsDialog dialog = new ValidateRegistrationsDialog(parentFrame);
+            dialog.setVisible(true);
+        }
     }
 }
