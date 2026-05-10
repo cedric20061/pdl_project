@@ -134,7 +134,7 @@ CREATE TABLE CAMPAIGN (
         CHECK (end_date >= start_date),
 
     CONSTRAINT CK_campaign_status 
-        CHECK (status IN ('OPEN', 'CLOSED', 'VALIDATED', 'ARCHIVED', 'PROCESSING', 'PLANNED'))
+        CHECK (status IN ('OPEN', 'CLOSED', 'ARCHIVED', 'PLANNED'))
 );
 -- =============================================
 -- TABLE SESSIONS

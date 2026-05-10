@@ -101,83 +101,218 @@ VALUES ('Énergie Durable','Transition énergétique','EDD','Resp EDD',
 /* ===================================================== */
 /* ===================== CAMPAIGN ====================== */
 /* ===================================================== */
+/* Campagne 1: OPEN (en cours) - promotion 2026 */
+INSERT INTO CAMPAIGN (start_date, end_date, status, max_choices, promotion, created_by, modified_by) 
+VALUES (DATE '2026-03-01', DATE '2026-03-31', 'OPEN', 3, 2026, 2000, NULL);
 
-INSERT INTO CAMPAIGN (start_date,end_date,status,max_choices,promotion,created_by,modified_by) VALUES (DATE '2026-03-01', DATE '2026-03-31','OPEN',3,2026,2000,NULL);
-INSERT INTO CAMPAIGN (start_date,end_date,status,max_choices,promotion,created_by,modified_by) VALUES (DATE '2026-04-01', DATE '2026-04-30','PLANNED',2,2026,2001,NULL);
-INSERT INTO CAMPAIGN (start_date,end_date,status,max_choices,promotion,created_by,modified_by) VALUES (DATE '2026-05-01', DATE '2026-05-31','PLANNED',3,2026,2002,NULL);
+/* Campagne 2: PLANNED (prochaine) - promotion 2026 */
+INSERT INTO CAMPAIGN (start_date, end_date, status, max_choices, promotion, created_by, modified_by) 
+VALUES (DATE '2026-04-01', DATE '2026-04-30', 'PLANNED', 3, 2026, 2001, NULL);
+
+/* Campagne 3: CLOSED (fermée) - promotion 2026 */
+INSERT INTO CAMPAIGN (start_date, end_date, status, max_choices, promotion, created_by, modified_by) 
+VALUES (DATE '2026-02-01', DATE '2026-02-28', 'CLOSED', 2, 2026, 2002, NULL);
 
 
 /* ===================================================== */
 /* ======================= SESSION ===================== */
 /* ===================================================== */
 
+/* ===== CAMPAIGN 1 (OPEN) - Sessions variées avec couverture complète des spécialisations ===== */
+
+/* Session 1 - ESAA (Spé 1) - 2026-03-10 - 08:30-09:00 - 4 places (SESSION REMPLIE) */
 INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
-VALUES (
-    DATE '2026-03-10',
-    TO_DATE('09:00:00', 'HH24:MI:SS'),
-    TO_DATE('11:00:00', 'HH24:MI:SS'),
-    30, 30, 'Salle 1', 1, 1, 2000, NULL
-);
+VALUES (DATE '2026-03-10', TO_DATE('08:30:00', 'HH24:MI:SS'), TO_DATE('09:00:00', 'HH24:MI:SS'), 4, 0, 'A101', 1, 1, 2000, NULL);
 
-INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by) VALUES (
-    DATE '2026-03-11',
-    TO_DATE('10:00:00', 'HH24:MI:SS'),
-    TO_DATE('12:00:00', 'HH24:MI:SS'),
-    25, 25, 'Salle 2', 1, 1, 2000, NULL
-);
+/* Session 2 - ICOM (Spé 2) - 2026-03-10 - 09:00-09:30 */
+INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
+VALUES (DATE '2026-03-10', TO_DATE('08:30:00', 'HH24:MI:SS'), TO_DATE('09:30:00', 'HH24:MI:SS'), 25, 25, 'A102', 2, 1, 2000, NULL);
 
-INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by) VALUES (
-    DATE '2026-03-12',
-    TO_DATE('14:00:00', 'HH24:MI:SS'),
-    TO_DATE('16:00:00', 'HH24:MI:SS'),
-    20, 20, 'Salle 3', 1, 1, 2001, NULL
-);
+/* Session 3 - BDTN (Spé 3) - 2026-03-10 - 09:30-10:00 */
+INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
+VALUES (DATE '2026-03-10', TO_DATE('09:00:00', 'HH24:MI:SS'), TO_DATE('09:30:00', 'HH24:MI:SS'), 30, 30, 'B201', 3, 1, 2000, NULL);
 
-INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by) VALUES (
-    DATE '2026-03-13',
-    TO_DATE('09:00:00', 'HH24:MI:SS'),
-    TO_DATE('11:00:00', 'HH24:MI:SS'),
-    30, 30, 'Salle 4', 1, 1, 2001, NULL
-);
+/* Session 4 - IA-IR (Spé 4) - 2026-03-10 - 10:00-10:30 */
+INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
+VALUES (DATE '2026-03-10', TO_DATE('10:00:00', 'HH24:MI:SS'), TO_DATE('10:30:00', 'HH24:MI:SS'), 25, 25, 'B202', 4, 1, 2000, NULL);
 
-INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by) VALUES (
-    DATE '2026-03-14',
-    TO_DATE('14:00:00', 'HH24:MI:SS'),
-    TO_DATE('16:00:00', 'HH24:MI:SS'),
-    25, 25, 'Salle 5', 2, 2, 2002, NULL
-);
+/* Session 5 - CERT (Spé 5) - 2026-03-10 - 10:30-11:00 */
+INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
+VALUES (DATE '2026-03-10', TO_DATE('10:30:00', 'HH24:MI:SS'), TO_DATE('11:00:00', 'HH24:MI:SS'), 20, 20, 'C301', 5, 1, 2000, NULL);
 
-INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by) VALUES (
-    DATE '2026-04-06',
-    TO_DATE('14:00:00', 'HH24:MI:SS'),
-    TO_DATE('16:00:00', 'HH24:MI:SS'),
-    25, 25, 'Salle 6', 2, 3, 2003, NULL
-);
+/* Session 6 - IA-BD (Spé 6) - 2026-03-10 - 11:00-11:30 */
+INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
+VALUES (DATE '2026-03-10', TO_DATE('11:00:00', 'HH24:MI:SS'), TO_DATE('11:30:00', 'HH24:MI:SS'), 28, 28, 'C302', 6, 1, 2000, NULL);
 
-INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by) VALUES (
-    DATE '2026-04-07',
-    TO_DATE('10:00:00', 'HH24:MI:SS'),
-    TO_DATE('12:00:00', 'HH24:MI:SS'),
-    20, 20, 'Salle 7', 3, 1, 2000, NULL
-);
+/* Session 7 - ISYMED (Spé 7) - 2026-03-10 - 13:30-14:00 (après midi, pas de conflit) */
+INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
+VALUES (DATE '2026-03-10', TO_DATE('13:30:00', 'HH24:MI:SS'), TO_DATE('14:00:00', 'HH24:MI:SS'), 30, 30, 'D401', 7, 1, 2000, NULL);
 
-INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by) VALUES (
-    DATE '2026-04-08',
-    TO_DATE('09:00:00', 'HH24:MI:SS'),
-    TO_DATE('11:00:00', 'HH24:MI:SS'),
-    30, 30, 'Salle 8', 3, 2, 2000, NULL
-);
+/* Session 8 - MCTSE (Spé 8) - 2026-03-10 - 14:00-14:30 */
+INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
+VALUES (DATE '2026-03-10', TO_DATE('14:00:00', 'HH24:MI:SS'), TO_DATE('14:30:00', 'HH24:MI:SS'), 22, 22, 'D402', 8, 1, 2000, NULL);
 
-INSERT INTO REGISTRATION (student_id,session_id,preference_rank,status) VALUES (1000,1,1,'PENDING');
-INSERT INTO REGISTRATION (student_id,session_id,preference_rank,status) VALUES (1000,2,2,'PENDING');
-INSERT INTO REGISTRATION (student_id,session_id,preference_rank,status) VALUES (1001,3,1,'ACCEPTED');
-INSERT INTO REGISTRATION (student_id,session_id,preference_rank,status) VALUES (1001,4,2,'PENDING');
-INSERT INTO REGISTRATION (student_id,session_id,preference_rank,status) VALUES (1002,5,1,'PENDING');
-INSERT INTO REGISTRATION (student_id,session_id,preference_rank,status) VALUES (1002,6,1,'ACCEPTED');
-INSERT INTO REGISTRATION (student_id,session_id,preference_rank,status) VALUES (1003,7,1,'PENDING');
-INSERT INTO REGISTRATION (student_id,session_id,preference_rank,status) VALUES (1003,8,1,'PENDING');
-INSERT INTO REGISTRATION (student_id,session_id,preference_rank,status) VALUES (1001,8,1,'PENDING');
-INSERT INTO REGISTRATION (student_id,session_id,preference_rank,status) VALUES (1000,8,1,'ACCEPTED');
+/* Session 9 - DARIA (Spé 9) - 2026-03-10 - 14:30-15:00 */
+INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
+VALUES (DATE '2026-03-10', TO_DATE('14:30:00', 'HH24:MI:SS'), TO_DATE('15:00:00', 'HH24:MI:SS'), 25, 25, 'E501', 9, 1, 2000, NULL);
+
+/* Session 10 - EDD (Spé 10) - 2026-03-10 - 15:00-15:30 */
+INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
+VALUES (DATE '2026-03-10', TO_DATE('15:00:00', 'HH24:MI:SS'), TO_DATE('15:30:00', 'HH24:MI:SS'), 26, 26, 'E502', 10, 1, 2000, NULL);
+
+/* Sessions supplémentaires pour Campaign 1 (jours différents pour éviter conflits) */
+/* Session 11 - ESAA (Spé 1) - 2026-03-11 - 09:00-09:30 */
+INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
+VALUES (DATE '2026-03-11', TO_DATE('09:00:00', 'HH24:MI:SS'), TO_DATE('09:30:00', 'HH24:MI:SS'), 30, 30, 'A103', 1, 1, 2001, NULL);
+
+/* Session 12 - ICOM (Spé 2) - 2026-03-11 - 10:00-10:30 */
+INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
+VALUES (DATE '2026-03-11', TO_DATE('10:00:00', 'HH24:MI:SS'), TO_DATE('10:30:00', 'HH24:MI:SS'), 25, 25, 'B203', 2, 1, 2001, NULL);
+
+/* Session 13 - BDTN (Spé 3) - 2026-03-11 - 14:00-14:30 */
+INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
+VALUES (DATE '2026-03-11', TO_DATE('14:00:00', 'HH24:MI:SS'), TO_DATE('14:30:00', 'HH24:MI:SS'), 28, 28, 'B204', 3, 1, 2001, NULL);
+
+/* Session 14 - IA-BD (Spé 6) - 2026-03-12 - 08:30-09:00 */
+INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
+VALUES (DATE '2026-03-12', TO_DATE('08:30:00', 'HH24:MI:SS'), TO_DATE('09:00:00', 'HH24:MI:SS'), 30, 30, 'C303', 6, 1, 2002, NULL);
+
+/* Session 15 - CERT (Spé 5) - 2026-03-12 - 10:30-11:00 */
+INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
+VALUES (DATE '2026-03-12', TO_DATE('10:30:00', 'HH24:MI:SS'), TO_DATE('11:00:00', 'HH24:MI:SS'), 24, 24, 'C304', 5, 1, 2002, NULL);
+
+
+/* ===== CAMPAIGN 2 (PLANNED) - Sessions pour la campagne planifiée ===== */
+
+/* Session 16 - ESAA (Spé 1) - 2026-04-05 - 08:30-09:00 */
+INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
+VALUES (DATE '2026-04-05', TO_DATE('08:30:00', 'HH24:MI:SS'), TO_DATE('09:00:00', 'HH24:MI:SS'), 30, 30, 'A201', 1, 2, 2000, NULL);
+
+/* Session 17 - ICOM (Spé 2) - 2026-04-05 - 09:30-10:00 */
+INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
+VALUES (DATE '2026-04-05', TO_DATE('09:30:00', 'HH24:MI:SS'), TO_DATE('10:00:00', 'HH24:MI:SS'), 28, 28, 'B301', 2, 2, 2000, NULL);
+
+/* Session 18 - BDTN (Spé 3) - 2026-04-05 - 13:30-14:00 */
+INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
+VALUES (DATE '2026-04-05', TO_DATE('13:30:00', 'HH24:MI:SS'), TO_DATE('14:00:00', 'HH24:MI:SS'), 30, 30, 'B302', 3, 2, 2000, NULL);
+
+/* Session 19 - IA-IR (Spé 4) - 2026-04-06 - 10:00-10:30 */
+INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
+VALUES (DATE '2026-04-06', TO_DATE('10:00:00', 'HH24:MI:SS'), TO_DATE('10:30:00', 'HH24:MI:SS'), 25, 25, 'C401', 4, 2, 2001, NULL);
+
+/* Session 20 - CERT (Spé 5) - 2026-04-06 - 14:00-14:30 */
+INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
+VALUES (DATE '2026-04-06', TO_DATE('14:00:00', 'HH24:MI:SS'), TO_DATE('14:30:00', 'HH24:MI:SS'), 22, 22, 'D501', 5, 2, 2001, NULL);
+
+/* Session 21 - IA-BD (Spé 6) - 2026-04-06 - 15:30-16:00 */
+INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
+VALUES (DATE '2026-04-06', TO_DATE('15:30:00', 'HH24:MI:SS'), TO_DATE('16:00:00', 'HH24:MI:SS'), 27, 27, 'E601', 6, 2, 2001, NULL);
+
+
+/* ===== CAMPAIGN 3 (CLOSED) - Sessions de la campagne fermée (toutes les inscriptions acceptées) ===== */
+
+/* Session 22 - ESAA (Spé 1) - 2026-02-10 - 08:30-09:00 */
+INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
+VALUES (DATE '2026-02-10', TO_DATE('08:30:00', 'HH24:MI:SS'), TO_DATE('09:00:00', 'HH24:MI:SS'), 30, 30, 'F101', 1, 3, 2002, NULL);
+
+/* Session 23 - ICOM (Spé 2) - 2026-02-10 - 09:30-10:00 */
+INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
+VALUES (DATE '2026-02-10', TO_DATE('09:30:00', 'HH24:MI:SS'), TO_DATE('10:00:00', 'HH24:MI:SS'), 25, 25, 'F102', 2, 3, 2002, NULL);
+
+/* Session 24 - BDTN (Spé 3) - 2026-02-10 - 14:00-14:30 */
+INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
+VALUES (DATE '2026-02-10', TO_DATE('14:00:00', 'HH24:MI:SS'), TO_DATE('14:30:00', 'HH24:MI:SS'), 28, 28, 'G201', 3, 3, 2002, NULL);
+
+
+/* ===================================================== */
+/* ==================== REGISTRATION =================== */
+/* ===================================================== */
+
+/* ===== CAMPAIGN 1 (OPEN) ===== */
+
+/* Session 1 (remplie avec 4 places) - Tous les 4 étudiants inscrits */
+INSERT INTO REGISTRATION (student_id, session_id, preference_rank, status) VALUES (1000, 1, 1, 'ACCEPTED');
+INSERT INTO REGISTRATION (student_id, session_id, preference_rank, status) VALUES (1001, 1, 1, 'ACCEPTED');
+INSERT INTO REGISTRATION (student_id, session_id, preference_rank, status) VALUES (1002, 1, 1, 'ACCEPTED');
+INSERT INTO REGISTRATION (student_id, session_id, preference_rank, status) VALUES (1003, 1, 1, 'ACCEPTED');
+
+/* Session 2 - ICOM - Étudiant 1000 */
+INSERT INTO REGISTRATION (student_id, session_id, preference_rank, status) VALUES (1000, 2, 2, 'PENDING');
+
+/* Session 3 - BDTN - Étudiant 1001 */
+INSERT INTO REGISTRATION (student_id, session_id, preference_rank, status) VALUES (1001, 3, 2, 'PENDING');
+
+/* Session 4 - IA-IR - Étudiant 1002 */
+INSERT INTO REGISTRATION (student_id, session_id, preference_rank, status) VALUES (1002, 4, 2, 'PENDING');
+
+/* Session 5 - CERT - Étudiant 1003 */
+INSERT INTO REGISTRATION (student_id, session_id, preference_rank, status) VALUES (1003, 5, 2, 'PENDING');
+
+/* Session 6 - IA-BD - Étudiant 1000 (13:30, pas de conflit avec 08:30-09:00) */
+INSERT INTO REGISTRATION (student_id, session_id, preference_rank, status) VALUES (1000, 6, 3, 'ACCEPTED');
+
+/* Session 7 - ISYMED - Étudiant 1001 (13:30) */
+INSERT INTO REGISTRATION (student_id, session_id, preference_rank, status) VALUES (1001, 7, 3, 'PENDING');
+
+/* Session 8 - MCTSE - Étudiant 1002 (14:00) */
+INSERT INTO REGISTRATION (student_id, session_id, preference_rank, status) VALUES (1002, 8, 3, 'ACCEPTED');
+
+/* Session 9 - DARIA - Étudiant 1003 (14:30) */
+INSERT INTO REGISTRATION (student_id, session_id, preference_rank, status) VALUES (1003, 9, 3, 'PENDING');
+
+/* Session 10 - EDD - Étudiant 1000 (15:00) */
+INSERT INTO REGISTRATION (student_id, session_id, preference_rank, status) VALUES (1000, 10, 1, 'PENDING');
+
+/* Session 11 (2026-03-11) - ESAA - Étudiant 1001 (09:00) */
+INSERT INTO REGISTRATION (student_id, session_id, preference_rank, status) VALUES (1001, 11, 1, 'ACCEPTED');
+
+/* Session 12 (2026-03-11) - ICOM - Étudiant 1002 (10:00) */
+INSERT INTO REGISTRATION (student_id, session_id, preference_rank, status) VALUES (1002, 12, 1, 'PENDING');
+
+/* Session 13 (2026-03-11) - BDTN - Étudiant 1003 (14:00) */
+INSERT INTO REGISTRATION (student_id, session_id, preference_rank, status) VALUES (1003, 13, 1, 'ACCEPTED');
+
+/* Session 14 (2026-03-12) - IA-BD - Étudiant 1000 (08:30) */
+INSERT INTO REGISTRATION (student_id, session_id, preference_rank, status) VALUES (1000, 14, 2, 'PENDING');
+
+/* Session 15 (2026-03-12) - CERT - Étudiant 1001 (10:30) */
+INSERT INTO REGISTRATION (student_id, session_id, preference_rank, status) VALUES (1001, 15, 2, 'ACCEPTED');
+
+
+/* ===== CAMPAIGN 2 (PLANNED) ===== */
+
+/* Session 16 - ESAA - Étudiant 1002 */
+INSERT INTO REGISTRATION (student_id, session_id, preference_rank, status) VALUES (1002, 16, 1, 'PENDING');
+
+/* Session 17 - ICOM - Étudiant 1003 */
+INSERT INTO REGISTRATION (student_id, session_id, preference_rank, status) VALUES (1003, 17, 1, 'PENDING');
+
+/* Session 18 - BDTN - Étudiant 1000 */
+INSERT INTO REGISTRATION (student_id, session_id, preference_rank, status) VALUES (1000, 18, 1, 'PENDING');
+
+/* Session 19 - IA-IR - Étudiant 1001 */
+INSERT INTO REGISTRATION (student_id, session_id, preference_rank, status) VALUES (1001, 19, 1, 'PENDING');
+
+/* Session 20 - CERT - Étudiant 1002 */
+INSERT INTO REGISTRATION (student_id, session_id, preference_rank, status) VALUES (1002, 20, 2, 'PENDING');
+
+/* Session 21 - IA-BD - Étudiant 1003 */
+INSERT INTO REGISTRATION (student_id, session_id, preference_rank, status) VALUES (1003, 21, 2, 'PENDING');
+
+
+/* ===== CAMPAIGN 3 (CLOSED) - Toutes les inscriptions acceptées ===== */
+
+/* Session 22 - ESAA - Étudiant 1000 */
+INSERT INTO REGISTRATION (student_id, session_id, preference_rank, status) VALUES (1000, 22, 1, 'ACCEPTED');
+
+/* Session 23 - ICOM - Étudiant 1001 */
+INSERT INTO REGISTRATION (student_id, session_id, preference_rank, status) VALUES (1001, 23, 1, 'ACCEPTED');
+
+/* Session 24 - BDTN - Étudiant 1002 */
+INSERT INTO REGISTRATION (student_id, session_id, preference_rank, status) VALUES (1002, 24, 1, 'ACCEPTED');
+
+/* Inscription supplémentaire Campaign 3 - Étudiant 1003 */
+INSERT INTO REGISTRATION (student_id, session_id, preference_rank, status) VALUES (1003, 22, 2, 'ACCEPTED');
 
 /* ===================================================== */
 /* ==================== NOTIFICATION =================== */
