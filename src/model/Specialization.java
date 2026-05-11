@@ -1,7 +1,11 @@
 package model;
 
 /**
- * This class represents a specialization in the system. It may contain information about the specialization's name, description, and other relevant details.
+ * Représente une spécialisation (dominante) du système.
+ * 
+ * Une spécialisation est une discipline académique offerte par un département.
+ * Elle est caractérisée par son nom, sa description, un acronyme et un responsable.
+ * 
  * @author Cédric GUIDI && Baptiste DUCROCQ
  * @version 1.0
  */

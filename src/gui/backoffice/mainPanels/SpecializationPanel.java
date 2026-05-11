@@ -89,8 +89,13 @@ public class SpecializationPanel extends JPanel {
         // 🔘 Bouton
         JButton searchButton = new JButton("Filtrer");
         UIStyle.styleFilterButton(searchButton);
+        
+        JButton refreshButton = new JButton("Actualiser");
+        UIStyle.styleFilterButton(refreshButton);
+        refreshButton.addActionListener(e -> refreshTable());
 
         content.add(searchButton);
+        content.add(refreshButton);
 
         // 📊 Compteur
         countLabel = new JLabel(specializations.size() + " élément(s)");
@@ -190,6 +195,30 @@ public class SpecializationPanel extends JPanel {
         table.getColumnModel().getColumn(6).setMinWidth(0);
         table.getColumnModel().getColumn(6).setMaxWidth(0);
         table.getColumnModel().getColumn(6).setWidth(0);
+
+        countLabel.setText(model.getRowCount() + " élément(s)");
+    }
+
+    // ==========================
+    // REFRESH TABLE
+    // ==========================
+    private void refreshTable() {
+        ArrayList<Specialization> specializations = specDAO.getList();
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.setRowCount(0);
+
+        for (Specialization spec : specializations) {
+            model.addRow(new Object[]{
+                spec.getId(),
+                spec.getName(),
+                spec.getDescription(),
+                spec.getAcronym(),
+                spec.getHandleBy(),
+                spec.getDepartmentName(),
+                spec.getDepartmentId(),
+                "Action"
+            });
+        }
 
         countLabel.setText(model.getRowCount() + " élément(s)");
     }

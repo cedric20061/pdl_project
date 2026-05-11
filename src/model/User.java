@@ -1,7 +1,11 @@
 package model;
 
 /**
- * This class represents a user in the system. It contains information about the user's identity, such as their name and email.
+ * Représente un utilisateur du système.
+ * 
+ * Un utilisateur est une entité de base caractérisée par son identité (prénom, nom)
+ * et son adresse e-mail. Cette classe est une classe parent pour les étudiants et admins.
+ * 
  * @author Cédric GUIDI && Baptiste DUCROCQ
  * @version 1.0
  */
@@ -12,11 +16,12 @@ public class User {
     private String email;
 
     /**
-     * Constructs a new User with the specified name and email.
-     * @param id The unique identifier of the user.
-     * @param firstName The first name of the user.
-     * @param lastName The last name of the user.
-     * @param email The email address of the user.
+     * Constructeur d'un utilisateur.
+     * 
+     * @param id Identifiant unique de l'utilisateur
+     * @param firstName Prénom de l'utilisateur
+     * @param lastName Nom de famille de l'utilisateur
+     * @param email Adresse e-mail de l'utilisateur
      */
     public User(int id, String firstName, String lastName, String email) {
         this.id = id;
@@ -26,24 +31,24 @@ public class User {
     }
 
     /**
-     * Returns the ID of the user.
-     * @return The ID of the user.
+     * Retourne l'identifiant de l'utilisateur.
+     * @return L'identifiant unique de l'utilisateur
      */
     public int getId() {
         return id;
     }
 
     /**
-     * Returns the first name of the user.
-     * @return The first name of the user.
+     * Retourne le prénom de l'utilisateur.
+     * @return Le prénom de l'utilisateur
      */
     public String getFirstName() {
         return firstName;
     }
 
     /**
-     * Returns the last name of the user.
-     * @return The last name of the user.
+     * Retourne le nom de famille de l'utilisateur.
+     * @return Le nom de famille de l'utilisateur
      */
     public String getLastName() {
         return lastName;

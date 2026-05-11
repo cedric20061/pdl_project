@@ -3,7 +3,12 @@ package model;
 import java.time.LocalDate;
 
 /**
- * This class represents a campaign in the system.
+ * Représente une campagne d'inscription du système.
+ * 
+ * Une campagne encadre une période d'inscription des étudiants à des sessions.
+ * Elle est caractérisée par ses dates de début/fin, son statut et des limites
+ * (nombre maximal de choix, promotion cible).
+ * 
  * @author Cédric GUIDI && Baptiste DUCROCQ
  * @version 1.0
  */
@@ -18,17 +23,22 @@ public class Campaign {
     private String modifiedBy;
 
 
-    public Campaign(){}
     /**
-     * Constructs a new Campaign with the specified ID and status.
-     * @param id The unique identifier of the campaign.
-     * @param status The status of the campaign.
-     * @param startDate The start date of the campaign.
-     * @param endDate The end date of the campaign.
-     * @param maxChoices The maximum number of choices for the campaign.
-     * @param promotion The promotion value for the campaign.
-     * @param createdBy The ID of the user who created the campaign.
-     * @param modifiedBy The ID of the user who last modified the campaign.
+     * Constructeur vide d'une campagne.
+     */
+    public Campaign(){}
+    
+    /**
+     * Constructeur d'une campagne.
+     * 
+     * @param id Identifiant unique de la campagne
+     * @param status Statut de la campagne
+     * @param startDate Date de début de la campagne (format ISO: YYYY-MM-DD)
+     * @param endDate Date de fin de la campagne (format ISO: YYYY-MM-DD)
+     * @param maxChoices Nombre maximal de choix autorisés pour la campagne
+     * @param promotion Année de promotion visée par la campagne
+     * @param createdBy Identifiant de l'utilisateur ayant créé la campagne
+     * @param modifiedBy Identifiant de l'utilisateur ayant modifié la campagne
      */
     public Campaign(int id, String status, String startDate, String endDate, int maxChoices, int promotion, String createdBy, String modifiedBy) {
         this.id = id;
@@ -42,64 +52,64 @@ public class Campaign {
     }
 
     /**
-     * Returns the ID of the campaign.
-     * @return The ID of the campaign.
+     * Retourne l'identifiant de la campagne.
+     * @return L'identifiant unique de la campagne
      */
     public int getId() {
         return id;
     }
 
     /**
-     * Returns the status of the campaign.
-     * @return The status of the campaign.
+     * Retourne le statut de la campagne.
+     * @return Le statut de la campagne
      */
     public String getStatus() {
         return status;
     }
 
     /**
-     * Returns the start date of the campaign.
-     * @return The start date of the campaign.
+     * Retourne la date de début de la campagne.
+     * @return La date de début de la campagne
      */
     public LocalDate getStartDate() {
         return startDate;
     }
 
     /**
-     *  Returns the end date of the campaign.
-     * @return The end date of the campaign.
-    */
+     * Retourne la date de fin de la campagne.
+     * @return La date de fin de la campagne
+     */
     public LocalDate getEndDate() {
         return endDate;
     }
 
     /**
-     * Returns the maximum number of choices for the campaign.
-     * @return The maximum number of choices for the campaign.
+     * Retourne le nombre maximal de choix pour la campagne.
+     * @return Le nombre maximal de choix
      */
     public int getMaxChoices() {
         return maxChoices;
     }
 
     /**
-     * Returns the promotion value for the campaign.
-     * @return The promotion value for the campaign.
+     * Retourne l'année de promotion visée par la campagne.
+     * @return L'année de promotion
      */
     public int getPromotion() {
         return promotion;
     }
 
     /**
-     * Returns the ID of the user who created the campaign.
-     * @return The ID of the user who created the campaign.
+     * Retourne l'identifiant de l'utilisateur ayant créé la campagne.
+     * @return L'identifiant du créateur
      */
     public String getCreatedBy() {
         return createdBy;
     }
 
     /**
-     * Returns the ID of the user who last modified the campaign.
-     * @return The ID of the user who last modified the campaign.
+     * Retourne l'identifiant de l'utilisateur ayant modifié la campagne.
+     * @return L'identifiant du dernier modificateur
      */
     public String getModifiedBy() {
         return modifiedBy;

@@ -150,6 +150,10 @@ public class CreateRegistration extends JFrame {
             JOptionPane.showMessageDialog(this, "Cet étudiant a déjà atteint le nombre maximum d'inscriptions pour cette campagne (" + currentCampaign.getMaxChoices() + ")", "Erreur", JOptionPane.ERROR_MESSAGE);
             return;
         }
+        if(selectedSession.getRemainingCapacity() <= 0){
+            JOptionPane.showMessageDialog(this, "Cette session est déjà complète !", "Erreur", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         int rank = nbrStudentSessionInCampaign + 1;
         String status = "PENDING";
 

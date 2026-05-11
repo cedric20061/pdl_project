@@ -124,7 +124,13 @@ public class SessionPanel extends JPanel {
         // 🔘 Bouton
         JButton filterBtn = new JButton("Filtrer");
         UIStyle.styleFilterButton(filterBtn);
+        
+        JButton refreshButton = new JButton("Actualiser");
+        UIStyle.styleFilterButton(refreshButton);
+        refreshButton.addActionListener(e -> refreshTable());
+        
         content.add(filterBtn);
+        content.add(refreshButton);
 
         // 📊 compteur
         countLabel = new JLabel(sessions.size() + " élément(s)");
@@ -245,6 +251,36 @@ public class SessionPanel extends JPanel {
         table.getColumn("Capacité").setPreferredWidth(50);
         table.getColumn("Créer par").setPreferredWidth(100);
         table.getColumn("Modifier par").setPreferredWidth(100);
+        countLabel.setText(model.getRowCount() + " élément(s)");
+    }
+
+    // ==========================
+    // REFRESH TABLE
+    // ==========================
+    private void refreshTable() {
+        ArrayList<Session> sessions = sessionDAO.getList();
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.setRowCount(0);
+
+        for(Session session: sessions){
+            model.addRow(new Object[]{
+                session.getId(), 
+                session.getDate(),
+                session.getStartTime(),
+                session.getEndTime(),
+                session.getMaxCapacity(),
+                session.getRemainingCapacity(),
+                session.getRoom(),
+                session.getSpecializationName(),
+                session.getSpecializationId(),
+                session.getCampaignName(),
+                session.getCampaignId(),
+                session.getCreatedBy(),
+                session.getModifiedBy(),
+                "Actions"
+            });
+        }
+
         countLabel.setText(model.getRowCount() + " élément(s)");
     }
 

@@ -4,7 +4,11 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 /**
- * This class represents a session in the system. It may contain information about the session's name, description, and other relevant details.
+ * Représente une session d'examen ou d'enseignement.
+ * 
+ * Une session est une occurrence d'une spécialisation proposée pendant une campagne donnée.
+ * Elle est caractérisée par sa date, ses horaires, son lieu et sa capacité d'accueil.
+ * 
  * @author Cédric GUIDI && Baptiste DUCROCQ
  * @version 1.0
  */

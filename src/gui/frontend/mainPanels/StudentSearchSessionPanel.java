@@ -89,7 +89,18 @@ public class StudentSearchSessionPanel extends JPanel {
         text.add(title);
         text.add(subtitle);
 
+        // Add refresh button on the right
+        JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+        right.setOpaque(false);
+        
+        JButton refreshButton = new JButton("Actualiser");
+        UIStyle.stylePrimaryButton(refreshButton);
+        refreshButton.addActionListener(e -> refreshAvailableSessions());
+        
+        right.add(refreshButton);
+
         header.add(text, BorderLayout.WEST);
+        header.add(right, BorderLayout.EAST);
 
         this.add(header, BorderLayout.NORTH);
     }
@@ -382,5 +393,20 @@ public class StudentSearchSessionPanel extends JPanel {
             }
             JOptionPane.showMessageDialog(this, msg.toString(), "Suggestions de Sessions", JOptionPane.INFORMATION_MESSAGE);
         }
+    }
+
+    // ===========================
+    // REFRESH AVAILABLE SESSIONS
+    // ===========================
+    private void refreshAvailableSessions() {
+        availableSessions = filterService.getAvailableSessionsForStudent(student);
+        filteredSessions = new ArrayList<>(availableSessions);
+        
+        // Reset filters
+        searchField.setText("");
+        specializationFilter.setSelectedIndex(0);
+        sortComboBox.setSelectedIndex(0);
+        
+        refreshSessionsDisplay();
     }
 }

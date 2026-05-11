@@ -74,10 +74,15 @@ public class DepartmentPanel extends JPanel {
 
         JButton searchButton = new JButton("Rechercher");
         UIStyle.styleSecondaryButton(searchButton);
+        
+        JButton refreshButton = new JButton("Actualiser");
+        UIStyle.styleSecondaryButton(refreshButton);
+        refreshButton.addActionListener(e -> refreshTable());
 
         searchPanel.add(searchLabel);
         searchPanel.add(searchField);
         searchPanel.add(searchButton);
+        searchPanel.add(refreshButton);
 
         // ==========================
         // Compteur intégré (BOTTOM)
@@ -186,6 +191,26 @@ public class DepartmentPanel extends JPanel {
         table.getColumn("Nom").setPreferredWidth(150);
         table.getColumn("Description").setPreferredWidth(300);
         table.getColumn("Responsable").setPreferredWidth(200);
+        countLabel.setText(model.getRowCount() + " élément(s)");
+    }
+
+    // ==========================
+    // REFRESH TABLE
+    // ==========================
+    private void refreshTable() {
+        ArrayList<Department> departments = deptDAO.getList();
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.setRowCount(0);
+
+        for (Department dept : departments) {
+            model.addRow(new Object[]{
+                    dept.getId(),
+                    dept.getName(),
+                    dept.getDescription(),
+                    dept.getHandleBy()
+            });
+        }
+
         countLabel.setText(model.getRowCount() + " élément(s)");
     }
 

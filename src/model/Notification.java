@@ -3,7 +3,11 @@ package model;
 import java.time.LocalDate;
 
 /**
- * This class represents a notification in the system. It may contain information about the message and the recipient.
+ * Représente une notification du système.
+ * 
+ * Une notification est un message destiné à un étudiant ou un administrateur
+ * pour l'informer d'un changement dans le système (inscription, confirmation, etc.).
+ * 
  * @author Cédric GUIDI && Baptiste DUCROCQ
  * @version 1.0
  */

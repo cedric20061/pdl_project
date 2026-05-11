@@ -110,8 +110,13 @@ public class CampaignPanel extends JPanel {
 
         JButton searchButton = new JButton("Filtrer");
         UIStyle.styleFilterButton(searchButton);
+        
+        JButton refreshButton = new JButton("Actualiser");
+        UIStyle.styleFilterButton(refreshButton);
+        refreshButton.addActionListener(e -> refreshTable());
 
         right.add(searchButton);
+        right.add(refreshButton);
 
         // ==========================
         // COMPTEUR (bas)
@@ -324,6 +329,30 @@ public class CampaignPanel extends JPanel {
                 });
             }
         }
+    }
+
+    // ==========================
+    // REFRESH TABLE
+    // ==========================
+    private void refreshTable() {
+        ArrayList<Campaign> campaigns = campDAO.getList();
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.setRowCount(0);
+
+        for (Campaign campaign : campaigns) {
+            model.addRow(new Object[]{
+                    campaign.getId(),
+                    campaign.getStartDate(),
+                    campaign.getEndDate(),
+                    campaign.getStatus(),
+                    campaign.getMaxChoices(),
+                    campaign.getPromotion(),
+                    campaign.getCreatedBy(),
+                    campaign.getModifiedBy()
+            });
+        }
+
+        countLabel.setText(model.getRowCount() + " élément(s)");
     }
 
     // -------------------------

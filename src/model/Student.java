@@ -1,9 +1,14 @@
 package model;
 
 /**
- * This class represents a student in the system. It extends the User class and may contain information about the student's identity, level, and other relevant details.
+ * Représente un étudiant du système.
+ * 
+ * Un étudiant hérite de la classe User et ajoute des informations spécifiques
+ * comme le niveau académique et l'année de promotion.
+ * 
  * @author Cédric GUIDI && Baptiste DUCROCQ
  * @version 1.0
+ * @see User
  */
 public class Student extends User {
     private String level;
@@ -11,13 +16,14 @@ public class Student extends User {
 
 
     /**
-     * Constructs a new Student with the specified level and promotion.
-     * @param id The unique identifier of the student.
-     * @param firstName The first name of the student.
-     * @param lastName The last name of the student.
-     * @param email The email address of the student.
-     * @param level The academic level of the student (e.g., "Undergraduate", "Graduate").
-     * @param promotion The promotion year of the student (e.g., 2024).
+     * Constructeur d'un étudiant.
+     * 
+     * @param id Identifiant unique de l'étudiant
+     * @param firstName Prénom de l'étudiant
+     * @param lastName Nom de famille de l'étudiant
+     * @param email Adresse e-mail de l'étudiant
+     * @param level Niveau académique de l'étudiant (ex: "Licence", "Master")
+     * @param promotion Année de promotion de l'étudiant (ex: 2024)
      */
     public Student(int id, String firstName, String lastName, String email, String level, int promotion) {
         super(id, firstName, lastName, email);
@@ -26,32 +32,32 @@ public class Student extends User {
     }
 
     /**
-     * Returns the academic level of the student.
-     * @return The academic level of the student.
-     */    
+     * Retourne le niveau académique de l'étudiant.
+     * @return Le niveau académique de l'étudiant
+     */
     public String getLevel() {
         return level;
     }
 
     /**
-     * Returns the promotion year of the student.
-     * @return The promotion year of the student.
-     */    
+     * Retourne l'année de promotion de l'étudiant.
+     * @return L'année de promotion de l'étudiant
+     */
     public int getPromotion() {
         return promotion;
     }
 
     /**
-     * Sets the academic level of the student.
-     * @param level The academic level of the student.
+     * Définit le niveau académique de l'étudiant.
+     * @param level Le niveau académique de l'étudiant
      */
     public void setLevel(String level) {
         this.level = level;
     }
 
     /**
-     * Sets the promotion year of the student.
-     * @param promotion The promotion year of the student.
+     * Définit l'année de promotion de l'étudiant.
+     * @param promotion L'année de promotion de l'étudiant
      */
     public void setPromotion(int promotion) {
         this.promotion = promotion;

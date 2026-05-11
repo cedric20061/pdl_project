@@ -1,18 +1,23 @@
 package model;
 
 /**
- * This class represents an administrator in the system. It extends the User class and may contain additional information or functionality specific to administrators.
+ * Représente un administrateur du système.
+ * 
+ * Un administrateur hérite de la classe User et est autorisé à gérer
+ * les ressources du système (campagnes, sessions, inscriptions, etc.).
+ * 
  * @author Cédric GUIDI && Baptiste DUCROCQ
  * @version 1.0
+ * @see User
  */
 public class Admin extends User {
     /**
-     * Constructs a new Admin with the specified name and email.
+     * Constructeur d'un administrateur.
      * 
-     * @param id The unique identifier of the admin.
-     * @param firstName The first name of the admin.
-     * @param lastName The last name of the admin.
-     * @param email The email address of the admin.
+     * @param id Identifiant unique de l'administrateur
+     * @param firstName Prénom de l'administrateur
+     * @param lastName Nom de famille de l'administrateur
+     * @param email Adresse e-mail de l'administrateur
      */
     public Admin(int id, String firstName, String lastName, String email) {
         super(id, firstName, lastName, email);

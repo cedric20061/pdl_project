@@ -1,7 +1,12 @@
 package model;
 
 /**
- * This class represents a registration in the system. It may contain information about the registrant and the session they are registered for.
+ * Représente une inscription d'un étudiant à une session.
+ * 
+ * Une inscription fait le lien entre un étudiant et une session.
+ * Elle inclut le rang de préférence de l'étudiant et le statut de l'inscription
+ * (PENDING, CONFIRMED, VALIDATED, REJECTED).
+ * 
  * @author Cédric GUIDI && Baptiste DUCROCQ
  * @version 1.0
  */

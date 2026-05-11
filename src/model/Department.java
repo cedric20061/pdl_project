@@ -1,22 +1,27 @@
 package model;
 
 /**
- * This class represents a department in the system. It may contain information about the department's name, and other relevant details.
+ * Représente un département du système.
+ * 
+ * Un département est une unité organisationnelle qui peut contenir plusieurs spécialisations.
+ * Il est caractérisé par son nom, une description et un responsable.
+ * 
  * @author Cédric GUIDI && Baptiste DUCROCQ
  * @version 1.0
  */
 public class Department {
-    private int id;
-    private String name;
-    private String description;
-    private String handleBy;
+    private int id;                // Identifiant unique du département
+    private String name;           // Nom du département
+    private String description;    // Description du département
+    private String handleBy;       // Responsable du département
 
     /**
-     * Constructs a new Department with the specified name.
-     * @param id The unique identifier of the department.
-     * @param name The name of the department.
-     * @param description The description of the department.
-     * @param handleBy The user who handles the department.
+     * Constructeur d'un département.
+     * 
+     * @param id Identifiant unique du département
+     * @param name Nom du département
+     * @param description Description du département
+     * @param handleBy Responsable du département
      */
     public Department(int id, String name, String description, String handleBy) {
         this.id = id;
@@ -26,64 +31,64 @@ public class Department {
     }
 
     /**
-     * Returns the ID of the department.
-     * @return The ID of the department.
+     * Retourne l'identifiant du département.
+     * @return L'identifiant unique du département
      */
     public int getId() {
         return id;
     }
 
     /**
-     * Returns the name of the department.
-     * @return The name of the department.
+     * Retourne le nom du département.
+     * @return Le nom du département
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Returns the description of the department.
-     * @return The description of the department.
+     * Retourne la description du département.
+     * @return La description du département
      */
     public String getDescription() {
         return description;
     }
 
     /**
-     * Returns the user who handles the department.
-     * @return The user who handles the department.
+     * Retourne le responsable du département.
+     * @return L'utilisateur responsable du département
      */
     public String getHandleBy() {
         return handleBy;
     }
 
     /**
-     * Sets the ID of the department.
-     * @param id The ID of the department.
+     * Définit l'identifiant du département.
+     * @param id L'identifiant unique du département
      */
     public void setId(int id) {
         this.id = id;
     }
 
     /**
-     * Sets the name of the department.
-     * @param name The name of the department.
+     * Définit le nom du département.
+     * @param name Le nom du département
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * Sets the description of the department.
-     * @param description The description of the department.
+     * Définit la description du département.
+     * @param description La description du département
      */
     public void setDescription(String description) {
         this.description = description;
     }
 
     /**
-     * Sets the user who handles the department.
-     * @param handleBy The user who handles the department.
+     * Définit le responsable du département.
+     * @param handleBy L'utilisateur responsable du département
      */
     public void setHandleBy(String handleBy) {
         this.handleBy = handleBy;
