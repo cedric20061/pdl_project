@@ -6,11 +6,23 @@ import java.io.IOException;
 import java.util.Properties;
 
 /**
- * Classe d'acces a la base de donnees
+ * Classe de base pour l'accès à la base de données Oracle.
+ * Gère les paramètres de connexion (URL, LOGIN, PASS) chargés depuis config.properties.
+ * 
+ * Responsabilités :
+ * - Charger les paramètres de connexion depuis le fichier de configuration
+ * - Initialiser le driver Oracle JDBC
+ * - Fournir une base commune pour tous les DAO
+ * 
+ * Configuration requise dans config.properties :
+ * - db.url : URL de connexion Oracle (ex: jdbc:oracle:thin:@host:1521:sid)
+ * - db.login : Identifiant de connexion (ex: C##BDD1_1)
+ * - db.pass : Mot de passe de connexion
  * 
  * @author ESIGELEC - TIC Department
  * @version 2.0
- * */
+ * @since 1.0
+ */
 public class ConnectionDAO {
 	/**
 	 * Parametres de connexion a la base de donnees oracle
@@ -26,8 +38,17 @@ public class ConnectionDAO {
 	protected static String PASS  = "";   // remplacer les ********. Exemple BDD11
 	
 	/**
-	 * Constructor
+	 * Constructeur.
+	 * Charge les paramètres de connexion depuis config.properties et initialise le driver Oracle.
 	 * 
+	 * Charge les propriétés suivantes :
+	 * - db.url : URL de la base de données
+	 * - db.login : Identifiant de connexion
+	 * - db.pass : Mot de passe de connexion
+	 * 
+	 * @throws ClassNotFoundException si le driver Oracle n'est pas trouvé
+	 * @throws FileNotFoundException si config.properties n'existe pas
+	 * @throws IOException si erreur de lecture de config.properties
 	 */
 	public ConnectionDAO() {
 		// chargement du pilote de bases de donnees

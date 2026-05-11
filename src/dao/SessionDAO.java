@@ -7,8 +7,31 @@ import model.Session;
 import service.AppCache;
 import service.AppSession;
 
+/**
+ * Data Access Object pour la gestion des sessions de formation.
+ * Gère les opérations CRUD (Create, Read, Update, Delete) pour la table SESSIONS.
+ * 
+ * Responsabilités :
+ * - Création de sessions avec gestion des capacités
+ * - Modification des détails de session (date, horaires, capacités, salle)
+ * - Suppression de sessions
+ * - Récupération des sessions avec cache en mémoire
+ * - Filtrage des sessions par campagne ou spécialisation
+ * 
+ * Le cache est automatiquement invalidé après chaque mutation (add, update, delete).
+ * Les capacités sont mises à jour lors des inscriptions/suppression d'inscriptions.
+ * 
+ * @author PDL Team
+ * @version 2.0
+ * @see Session
+ * @see AppCache
+ */
 public class SessionDAO extends ConnectionDAO {
 
+    /**
+     * Constructeur par défaut.
+     * Initialise la connexion à la base de données via le parent ConnectionDAO.
+     */
     public SessionDAO() {
         super();
     }
@@ -16,6 +39,14 @@ public class SessionDAO extends ConnectionDAO {
     // ==========================
     // CREATE
     // ==========================
+    /**
+     * Crée une nouvelle session en base de données.
+     * Récupère l'ID généré et le stocke dans l'objet session.
+     * Invalide le cache après insertion.
+     * 
+     * @param s L'objet Session à insérer
+     * @return 1 si l'insertion a réussi, 0 sinon
+     */
     public int add(Session s) {
         Connection con = null;
         PreparedStatement ps = null;
@@ -65,6 +96,14 @@ public class SessionDAO extends ConnectionDAO {
     // ==========================
     // UPDATE
     // ==========================
+    /**
+     * Met à jour une session existante en base de données.
+     * Modifie la date, les horaires, les capacités, la salle, la spécialisation et la campagne.
+     * Invalide le cache après mise à jour.
+     * 
+     * @param s L'objet Session avec les nouvelles données
+     * @return 1 si la mise à jour a réussi, 0 sinon
+     */
     public int update(Session s) {
         Connection con = null;
         PreparedStatement ps = null;
@@ -107,6 +146,13 @@ public class SessionDAO extends ConnectionDAO {
     // ==========================
     // DELETE
     // ==========================
+    /**
+     * Supprime une session de la base de données par son ID.
+     * Invalide le cache après suppression.
+     * 
+     * @param id L'identifiant unique de la session à supprimer
+     * @return 1 si la suppression a réussi, 0 sinon
+     */
     public int delete(int id) {
         Connection con = null;
         PreparedStatement ps = null;
@@ -133,6 +179,14 @@ public class SessionDAO extends ConnectionDAO {
     // ==========================
     // GET BY ID (JOIN complet)
     // ==========================
+    /**
+     * Récupère une session par son identifiant avec toutes les informations associées.
+     * Utilise d'abord le cache en mémoire pour optimiser les performances.
+     * Récupère les informations de spécialisation et campagne via JOIN complet.
+     * 
+     * @param id L'identifiant unique de la session
+     * @return L'objet Session trouvé avec toutes les données, ou null si aucune session ne correspond
+     */
     public Session get(int id) {
         Connection con = null;
         PreparedStatement ps = null;
@@ -182,6 +236,14 @@ public class SessionDAO extends ConnectionDAO {
     // ==========================
     // GET ALL
     // ==========================
+    /**
+     * Récupère toutes les sessions de la base de données.
+     * Utilise le cache en mémoire pour éviter les requêtes répétées.
+     * Récupère les informations associées (spécialisation, campagne, administrateur).
+     * Les résultats sont ordonnés par session_id.
+     * 
+     * @return Liste de toutes les sessions, vide si aucune session n'existe
+     */
     public ArrayList<Session> getList() {
         Connection con = null;
         PreparedStatement ps = null;

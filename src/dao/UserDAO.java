@@ -10,11 +10,31 @@ import model.Student;
 import model.User;
 import service.AppSession;
 
+/**
+ * Data Access Object pour l'authentification et l'authentification des utilisateurs.
+ * Gère la récupération des informations d'utilisateur pour l'authentification.
+ * 
+ * Responsabilités :
+ * - Vérification des identifiants utilisateur (email/mot de passe)
+ * - Récupération des informations de Student ou Admin
+ * - Initialisation de la session utilisateur
+ * 
+ * Cette DAO supporte deux types d'utilisateurs :
+ * - Student : accès frontend pour rechercher et s'inscrire aux sessions
+ * - Admin : accès backoffice pour gérer les campagnes et inscriptions
+ * 
+ * @author PDL Team
+ * @version 2.0
+ * @see User
+ * @see Student
+ * @see Admin
+ * @see AppSession
+ */
 public class UserDAO extends ConnectionDAO {
     /**
-	 * Constructor
-	 * 
-	 */
+     * Constructeur par défaut.
+     * Initialise la connexion à la base de données via le parent ConnectionDAO.
+     */
 	public UserDAO() {
 		super();
 	}

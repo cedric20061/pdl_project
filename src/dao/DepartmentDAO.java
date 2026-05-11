@@ -6,8 +6,29 @@ import java.util.ArrayList;
 import model.Department;
 import service.AppCache;
 
+/**
+ * Data Access Object pour la gestion des départements.
+ * Gère les opérations CRUD (Create, Read, Update, Delete) pour la table DEPARTMENT.
+ * 
+ * Responsabilités :
+ * - Création de nouveaux départements
+ * - Modification des informations de département
+ * - Suppression de départements
+ * - Récupération des départements avec cache en mémoire
+ * 
+ * Le cache est automatiquement invalidé après chaque mutation (add, update, delete).
+ * 
+ * @author PDL Team
+ * @version 2.0
+ * @see Department
+ * @see AppCache
+ */
 public class DepartmentDAO extends ConnectionDAO {
 
+    /**
+     * Constructeur par défaut.
+     * Initialise la connexion à la base de données via le parent ConnectionDAO.
+     */
     public DepartmentDAO() {
         super();
     }
@@ -15,6 +36,14 @@ public class DepartmentDAO extends ConnectionDAO {
     // ==========================
     // CREATE
     // ==========================
+    /**
+     * Crée un nouveau département en base de données.
+     * Récupère l'ID généré et le stocke dans l'objet département.
+     * Invalide le cache après insertion.
+     * 
+     * @param department L'objet Department à insérer
+     * @return 1 si l'insertion a réussi, 0 sinon
+     */
     public int add(Department department) {
         Connection con = null;
         PreparedStatement ps = null;
@@ -59,6 +88,13 @@ public class DepartmentDAO extends ConnectionDAO {
     // ==========================
     // UPDATE
     // ==========================
+    /**
+     * Met à jour un département existant en base de données.
+     * Invalide le cache après mise à jour.
+     * 
+     * @param department L'objet Department avec les nouvelles données
+     * @return 1 si la mise à jour a réussi, 0 sinon
+     */
     public int update(Department department) {
         Connection con = null;
         PreparedStatement ps = null;
@@ -91,6 +127,13 @@ public class DepartmentDAO extends ConnectionDAO {
     // ==========================
     // DELETE
     // ==========================
+    /**
+     * Supprime un département de la base de données par son ID.
+     * Invalide le cache après suppression.
+     * 
+     * @param id L'identifiant unique du département à supprimer
+     * @return 1 si la suppression a réussi, 0 sinon
+     */
     public int delete(int id) {
         Connection con = null;
         PreparedStatement ps = null;
@@ -119,6 +162,13 @@ public class DepartmentDAO extends ConnectionDAO {
     // ==========================
     // GET BY ID
     // ==========================
+    /**
+     * Récupère un département par son identifiant.
+     * Utilise d'abord le cache en mémoire pour optimiser les performances.
+     * 
+     * @param id L'identifiant unique du département
+     * @return L'objet Department trouvé, ou null si aucun département ne correspond
+     */
     public Department get(int id) {
         // Check cache first
         ArrayList<Department> cached = AppCache.getInstance().getDepartments();
@@ -156,6 +206,13 @@ public class DepartmentDAO extends ConnectionDAO {
     // ==========================
     // GET ALL
     // ==========================
+    /**
+     * Récupère tous les départements de la base de données.
+     * Utilise le cache en mémoire pour éviter les requêtes répétées.
+     * Les résultats sont ordonnés par department_id.
+     * 
+     * @return Liste de tous les départements, vide si aucun département n'existe
+     */
     public ArrayList<Department> getList() {
         // Check cache first
         if (AppCache.getInstance().getDepartments() != null) {

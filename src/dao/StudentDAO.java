@@ -10,14 +10,40 @@ import java.util.ArrayList;
 import model.Student;
 import service.AppCache;
 
+/**
+ * Data Access Object pour la gestion des étudiants.
+ * Gère les opérations CRUD (Create, Read, Update, Delete) pour la table STUDENT.
+ * 
+ * Responsabilités :
+ * - Récupération des étudiants par ID ou liste complète
+ * - Gestion du cache en mémoire des étudiants
+ * - Mapping des données de base de données vers les objets Student
+ * 
+ * @author PDL Team
+ * @version 2.0
+ * @see Student
+ * @see AppCache
+ */
 public class StudentDAO extends ConnectionDAO {
     
+    /**
+     * Constructeur par défaut.
+     * Initialise la connexion à la base de données via le parent ConnectionDAO.
+     */
     public StudentDAO(){
         super();
     }
     // ==========================
     // GET BY ID (avec JOIN)
     // ==========================
+    /**
+     * Récupère un étudiant par son identifiant.
+     * Utilise d'abord le cache en mémoire pour optimiser les performances.
+     * Récupère les informations du département associé via JOIN.
+     * 
+     * @param id L'identifiant unique de l'étudiant
+     * @return L'objet Student trouvé, ou null si aucun étudiant ne correspond
+     */
     public Student get(int id) {
         // Check cache first
         Student cached = AppCache.getInstance().getStudentById(id);
@@ -58,6 +84,13 @@ public class StudentDAO extends ConnectionDAO {
     // ==========================
     // GET ALL (avec JOIN)
     // ==========================
+    /**
+     * Récupère tous les étudiants de la base de données.
+     * Utilise le cache en mémoire pour éviter les requêtes répétées.
+     * Les résultats sont ordonnés par student_id.
+     * 
+     * @return Liste de tous les étudiants, vide si aucun étudiant n'existe
+     */
     public ArrayList<Student> getList() {
         // Check cache first
         if (AppCache.getInstance().getStudents() != null) {
@@ -99,6 +132,14 @@ public class StudentDAO extends ConnectionDAO {
     // ==========================
     // MAPPING
     // ==========================
+    /**
+     * Convertit une ligne ResultSet en objet Student.
+     * Mappe tous les champs de la table STUDENT aux propriétés de l'objet.
+     * 
+     * @param rs Le ResultSet contenant les données de l'étudiant
+     * @return Un objet Student complètement initialisé
+     * @throws SQLException si une erreur d'accès aux données se produit
+     */
     private Student map(ResultSet rs) throws SQLException {
         return new Student(
             rs.getInt("student_id"),

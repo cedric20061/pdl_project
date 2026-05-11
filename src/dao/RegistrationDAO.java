@@ -6,8 +6,45 @@ import java.util.ArrayList;
 import model.Registration;
 import service.AppCache;
 
+/**
+ * Data Access Object pour la gestion des inscriptions aux sessions.
+ * Gère les opérations CRUD (Create, Read, Update, Delete) pour la table REGISTRATION.
+ * 
+ * Responsabilités :
+ * - Création d'inscriptions (ajout d'un étudiant à une session)
+ * - Modification du statut ou du rang de préférence d'une inscription
+ * - Suppression d'inscriptions
+ * - Récupération des inscriptions avec filtrage par étudiant, session ou campagne
+ * - Gestion du cache multi-niveaux (global, par étudiant, par session, par campagne)
+ * - Gestion de la capacité restante des sessions (remaining_capacity)
+ * 
+ * Gestion de la capacité :
+ * - Avant l'ajout : VÉRIFICATION que la session a des places disponibles (remaining_capacity > 0)
+ * - L'ajout d'une inscription DÉCRÉMENTE la capacité restante de la session
+ * - La suppression d'une inscription INCRÉMENTE la capacité restante de la session
+ * - La capacité est mise à jour dans la table SESSIONS automatiquement
+ * 
+ * Codes de retour pour add() :
+ * - 1 : Inscription créée avec succès
+ * - -1 : Doublon d'inscription existante
+ * - -2 : Aucune place disponible dans la session
+ * - 0 : Erreur lors de la création
+ * 
+ * Le cache est automatiquement invalidé après chaque mutation (add, update, delete).
+ * Les caches invalidés : registrations, registrationsByStudent, sessions
+ * Les statuts valides : PENDING, CONFIRMED, VALIDATED, REJECTED
+ * 
+ * @author PDL Team
+ * @version 2.2
+ * @see Registration
+ * @see AppCache
+ */
 public class RegistrationDAO extends ConnectionDAO {
 
+    /**
+     * Constructeur par défaut.
+     * Initialise la connexion à la base de données via le parent ConnectionDAO.
+     */
     public RegistrationDAO() {
         super();
     }
@@ -15,12 +52,40 @@ public class RegistrationDAO extends ConnectionDAO {
     // ==========================
     // CREATE
     // ==========================
+    /**
+     * Crée une nouvelle inscription en base de données.
+     * Vérifie d'abord que la session a des places disponibles (remaining_capacity > 0).
+     * Décrémente la capacité restante (remaining_capacity) de la session.
+     * Invalide tous les caches d'inscription et sessions après insertion.
+     * 
+     * @param studentId L'ID de l'étudiant
+     * @param sessionId L'ID de la session
+     * @param preferenceRank Le rang de préférence de l'étudiant (1, 2, 3...)
+     * @param status Le statut initial de l'inscription (PENDING, CONFIRMED, VALIDATED, REJECTED)
+     * @return 1 si l'insertion a réussi, -1 si doublon existant, -2 si pas de place disponible, 0 sinon
+     */
     public int add(int studentId, int sessionId, int preferenceRank, String status) {
         Connection con = null;
         PreparedStatement ps = null;
+        PreparedStatement capacityCheckPs = null;
+        ResultSet capacityRs = null;
 
         try {
             con = DriverManager.getConnection(URL, LOGIN, PASS);
+
+            // Vérifier la capacité restante
+            String capacitySql = "SELECT remaining_capacity FROM SESSIONS WHERE session_id = ?";
+            capacityCheckPs = con.prepareStatement(capacitySql);
+            capacityCheckPs.setInt(1, sessionId);
+            capacityRs = capacityCheckPs.executeQuery();
+
+            if (capacityRs.next()) {
+                int remainingCapacity = capacityRs.getInt("remaining_capacity");
+                if (remainingCapacity <= 0) {
+                    System.out.println("La session n'a plus de places disponibles!");
+                    return -2; // No capacity available
+                }
+            }
 
             String sql = "INSERT INTO REGISTRATION (student_id, session_id, preference_rank, status) "
                        + "VALUES (?, ?, ?, ?)";
@@ -34,8 +99,18 @@ public class RegistrationDAO extends ConnectionDAO {
 
             int result = ps.executeUpdate();
 
-            // Invalidate cache for this student
+            // Décrémenter session remaining capacity
+            if (result > 0) {
+                String updateSql = "UPDATE SESSIONS SET remaining_capacity = remaining_capacity - 1 WHERE session_id = ?";
+                PreparedStatement updatePs = con.prepareStatement(updateSql);
+                updatePs.setInt(1, sessionId);
+                updatePs.executeUpdate();
+                updatePs.close();
+            }
+
+            // Invalider le cache pour cet étudiant et pour les sessions
             AppCache.getInstance().setRegistrationsByStudent(studentId, null);
+            AppCache.getInstance().setSessions(null);
 
             return result;
 
@@ -47,6 +122,8 @@ public class RegistrationDAO extends ConnectionDAO {
                 e.printStackTrace();
             }
         } finally {
+            try { if (capacityRs != null) capacityRs.close(); } catch (Exception ignored) {}
+            try { if (capacityCheckPs != null) capacityCheckPs.close(); } catch (Exception ignored) {}
             try { if (ps != null) ps.close(); } catch (Exception ignored) {}
             try { if (con != null) con.close(); } catch (Exception ignored) {}
         }
@@ -56,6 +133,13 @@ public class RegistrationDAO extends ConnectionDAO {
     // ==========================
     // UPDATE (status / rank)
     // ==========================
+    /**
+     * Met à jour une inscription existante (rang et statut).
+     * Invalide tous les caches d'inscription après mise à jour.
+     * 
+     * @param r L'objet Registration avec les nouvelles données
+     * @return 1 si la mise à jour a réussi, 0 sinon
+     */
     public int update(Registration r) {
         Connection con = null;
         PreparedStatement ps = null;
@@ -91,10 +175,12 @@ public class RegistrationDAO extends ConnectionDAO {
 
     /**
      * Update only the status of a registration.
-     * @param studentId The student ID
-     * @param sessionId The session ID
-     * @param newStatus The new status value
-     * @return The number of rows affected
+     * Invalide tous les caches d'inscription après mise à jour.
+     * 
+     * @param studentId L'ID de l'étudiant
+     * @param sessionId L'ID de la session
+     * @param newStatus Le nouveau statut de l'inscription
+     * @return Le nombre de lignes affectées (1 ou 0)
      */
     public int updateStatus(int studentId, int sessionId, String newStatus) {
         Connection con = null;
@@ -131,6 +217,15 @@ public class RegistrationDAO extends ConnectionDAO {
     // ==========================
     // DELETE
     // ==========================
+    /**
+     * Supprime une inscription de la base de données.
+     * Incrémente la capacité restante (remaining_capacity) de la session.
+     * Invalide tous les caches d'inscription et sessions après suppression.
+     * 
+     * @param studentId L'ID de l'étudiant
+     * @param sessionId L'ID de la session
+     * @return Le nombre de lignes supprimées (1 ou 0)
+     */
     public int delete(int studentId, int sessionId) {
         Connection con = null;
         PreparedStatement ps = null;
@@ -146,8 +241,18 @@ public class RegistrationDAO extends ConnectionDAO {
 
             int result = ps.executeUpdate();
 
-            // Invalidate cache for this student
+            // Increment session remaining capacity
+            if (result > 0) {
+                String updateSql = "UPDATE SESSIONS SET remaining_capacity = remaining_capacity + 1 WHERE session_id = ?";
+                PreparedStatement updatePs = con.prepareStatement(updateSql);
+                updatePs.setInt(1, sessionId);
+                updatePs.executeUpdate();
+                updatePs.close();
+            }
+
+            // Invalidate cache for this student and sessions
             AppCache.getInstance().setRegistrationsByStudent(studentId, null);
+            AppCache.getInstance().setSessions(null);
 
             return result;
 
@@ -335,6 +440,9 @@ public class RegistrationDAO extends ConnectionDAO {
 
     /**
      * Delete a registration by session and student.
+     * Incrémente la capacité restante (remaining_capacity) de la session.
+     * Invalide le cache d'inscription et sessions après suppression.
+     * 
      * @param sessionId The session ID
      * @param studentId The student ID
      * @return The number of rows affected
@@ -354,8 +462,18 @@ public class RegistrationDAO extends ConnectionDAO {
 
             int result = ps.executeUpdate();
 
-            // Invalidate cache for this student
+            // Increment session remaining capacity
+            if (result > 0) {
+                String updateSql = "UPDATE SESSIONS SET remaining_capacity = remaining_capacity + 1 WHERE session_id = ?";
+                PreparedStatement updatePs = con.prepareStatement(updateSql);
+                updatePs.setInt(1, sessionId);
+                updatePs.executeUpdate();
+                updatePs.close();
+            }
+
+            // Invalidate cache for this student and sessions
             AppCache.getInstance().setRegistrationsByStudent(studentId, null);
+            AppCache.getInstance().setSessions(null);
 
             return result;
 

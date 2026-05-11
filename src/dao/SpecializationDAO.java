@@ -6,8 +6,29 @@ import java.util.ArrayList;
 import model.Specialization;
 import service.AppCache;
 
+/**
+ * Data Access Object pour la gestion des spécialisations (dominantes).
+ * Gère les opérations CRUD (Create, Read, Update, Delete) pour la table SPECIALIZATION.
+ * 
+ * Responsabilités :
+ * - Création de nouvelles spécialisations
+ * - Modification des informations de spécialisation
+ * - Suppression de spécialisations
+ * - Récupération des spécialisations avec cache en mémoire
+ * 
+ * Le cache est automatiquement invalidé après chaque mutation (add, update, delete).
+ * 
+ * @author PDL Team
+ * @version 2.0
+ * @see Specialization
+ * @see AppCache
+ */
 public class SpecializationDAO extends ConnectionDAO {
 
+    /**
+     * Constructeur par défaut.
+     * Initialise la connexion à la base de données via le parent ConnectionDAO.
+     */
     public SpecializationDAO() {
         super();
     }
@@ -15,6 +36,14 @@ public class SpecializationDAO extends ConnectionDAO {
     // ==========================
     // CREATE
     // ==========================
+    /**
+     * Crée une nouvelle spécialisation en base de données.
+     * Récupère l'ID généré et le stocke dans l'objet spécialisation.
+     * Invalide le cache après insertion.
+     * 
+     * @param s L'objet Specialization à insérer
+     * @return 1 si l'insertion a réussi, 0 sinon
+     */
     public int add(Specialization s) {
         Connection con = null;
         PreparedStatement ps = null;
@@ -59,6 +88,13 @@ public class SpecializationDAO extends ConnectionDAO {
     // ==========================
     // UPDATE
     // ==========================
+    /**
+     * Met à jour une spécialisation existante en base de données.
+     * Invalide le cache après mise à jour.
+     * 
+     * @param s L'objet Specialization avec les nouvelles données
+     * @return 1 si la mise à jour a réussi, 0 sinon
+     */
     public int update(Specialization s) {
         Connection con = null;
         PreparedStatement ps = null;
@@ -95,6 +131,13 @@ public class SpecializationDAO extends ConnectionDAO {
     // ==========================
     // DELETE
     // ==========================
+    /**
+     * Supprime une spécialisation de la base de données par son ID.
+     * Invalide le cache après suppression.
+     * 
+     * @param id L'identifiant unique de la spécialisation à supprimer
+     * @return 1 si la suppression a réussi, 0 sinon
+     */
     public int delete(int id) {
         Connection con = null;
         PreparedStatement ps = null;
@@ -123,6 +166,13 @@ public class SpecializationDAO extends ConnectionDAO {
     // ==========================
     // GET BY ID (avec JOIN)
     // ==========================
+    /**
+     * Récupère une spécialisation par son identifiant.
+     * Utilise d'abord le cache en mémoire pour optimiser les performances.
+     * 
+     * @param id L'identifiant unique de la spécialisation
+     * @return L'objet Specialization trouvé, ou null si aucune spécialisation ne correspond
+     */
     public Specialization get(int id) {
         // Check cache first
         ArrayList<Specialization> cached = AppCache.getInstance().getSpecializations();
@@ -164,6 +214,13 @@ public class SpecializationDAO extends ConnectionDAO {
     // ==========================
     // GET ALL (avec JOIN)
     // ==========================
+    /**
+     * Récupère toutes les spécialisations de la base de données.
+     * Utilise le cache en mémoire pour éviter les requêtes répétées.
+     * Les résultats sont ordonnés par specialization_id.
+     * 
+     * @return Liste de toutes les spécialisations, vide si aucune spécialisation n'existe
+     */
     public ArrayList<Specialization> getList() {
         // Check cache first
         if (AppCache.getInstance().getSpecializations() != null) {
