@@ -9,7 +9,8 @@ import java.time.LocalDate;
  * Elle est caractérisée par ses dates de début/fin, son statut et des limites
  * (nombre maximal de choix, promotion cible).
  * 
- * @author Cédric GUIDI && Baptiste DUCROCQ
+ * @author Cédric GUIDI
+ * @author Baptiste DUCROCQ
  * @version 1.0
  */
 public class Campaign {

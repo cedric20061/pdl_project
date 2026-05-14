@@ -46,9 +46,6 @@ public class ConnectionDAO {
 	 * - db.login : Identifiant de connexion
 	 * - db.pass : Mot de passe de connexion
 	 * 
-	 * @throws ClassNotFoundException si le driver Oracle n'est pas trouvé
-	 * @throws FileNotFoundException si config.properties n'existe pas
-	 * @throws IOException si erreur de lecture de config.properties
 	 */
 	public ConnectionDAO() {
 		// chargement du pilote de bases de donnees

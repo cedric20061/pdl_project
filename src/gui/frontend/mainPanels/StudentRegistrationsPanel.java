@@ -26,7 +26,8 @@ import dao.SessionDAO;
  * - Modify preference order between registrations
  * - Cancel registrations
  * 
- * @author Cédric GUIDI && Baptiste DUCROCQ
+ * @author Cédric GUIDI
+ * @author Baptiste DUCROCQ
  * @version 1.0
  */
 public class StudentRegistrationsPanel extends JPanel {

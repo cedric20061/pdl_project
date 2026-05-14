@@ -9,12 +9,12 @@ import java.time.LocalTime;
  * Une session est une occurrence d'une spécialisation proposée pendant une campagne donnée.
  * Elle est caractérisée par sa date, ses horaires, son lieu et sa capacité d'accueil.
  * 
- * @author Cédric GUIDI && Baptiste DUCROCQ
+ * @author Cédric GUIDI
+ * @author Baptiste DUCROCQ
  * @version 1.0
  */
 public class Session {
 
-    //TODO  ajouter le nombre de places restantes
     private int id;
     private LocalDate date;
     private LocalTime startTime;

@@ -7,7 +7,8 @@ package model;
  * Elle inclut le rang de préférence de l'étudiant et le statut de l'inscription
  * (PENDING, CONFIRMED, VALIDATED, REJECTED).
  * 
- * @author Cédric GUIDI && Baptiste DUCROCQ
+ * @author Cédric GUIDI
+ * @author Baptiste DUCROCQ
  * @version 1.0
  */
 public class Registration {

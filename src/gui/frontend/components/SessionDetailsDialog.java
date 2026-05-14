@@ -22,7 +22,8 @@ import dao.RegistrationDAO;
  * - View alternative session suggestions if full
  * - See if already registered for this session
  * 
- * @author Cédric GUIDI && Baptiste DUCROCQ
+ * @author Cédric GUIDI
+ * @author Baptiste DUCROCQ
  * @version 1.0
  */
 public class SessionDetailsDialog extends JDialog {

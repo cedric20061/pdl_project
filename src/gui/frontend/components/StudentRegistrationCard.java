@@ -17,7 +17,8 @@ import dao.RegistrationDAO;
  * - Registration status
  * - Action button to view details and modify rank
  * 
- * @author Cédric GUIDI && Baptiste DUCROCQ
+ * @author Cédric GUIDI
+ * @author Baptiste DUCROCQ
  * @version 1.0
  */
 public class StudentRegistrationCard extends JPanel {

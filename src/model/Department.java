@@ -6,7 +6,8 @@ package model;
  * Un département est une unité organisationnelle qui peut contenir plusieurs spécialisations.
  * Il est caractérisé par son nom, une description et un responsable.
  * 
- * @author Cédric GUIDI && Baptiste DUCROCQ
+ * @author Cédric GUIDI
+ * @author Baptiste DUCROCQ
  * @version 1.0
  */
 public class Department {

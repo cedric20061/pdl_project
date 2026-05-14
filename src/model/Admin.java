@@ -6,7 +6,8 @@ package model;
  * Un administrateur hérite de la classe User et est autorisé à gérer
  * les ressources du système (campagnes, sessions, inscriptions, etc.).
  * 
- * @author Cédric GUIDI && Baptiste DUCROCQ
+ * @author Cédric GUIDI
+ * @author Baptiste DUCROCQ
  * @version 1.0
  * @see User
  */

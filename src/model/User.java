@@ -6,7 +6,8 @@ package model;
  * Un utilisateur est une entité de base caractérisée par son identité (prénom, nom)
  * et son adresse e-mail. Cette classe est une classe parent pour les étudiants et admins.
  * 
- * @author Cédric GUIDI && Baptiste DUCROCQ
+ * @author Cédric GUIDI
+ * @author Baptiste DUCROCQ
  * @version 1.0
  */
 public class User {

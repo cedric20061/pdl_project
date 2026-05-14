@@ -26,7 +26,8 @@ import model.Student;
  * - Register for sessions with preference ranking
  * - Get suggestions for full sessions
  * 
- * @author Cédric GUIDI && Baptiste DUCROCQ
+ * @author Cédric GUIDI
+ * @author Baptiste DUCROCQ
  * @version 1.0
  */
 public class StudentSearchSessionPanel extends JPanel {

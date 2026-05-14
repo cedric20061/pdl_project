@@ -1,0 +1,15 @@
+common
+common.components.app
+dao
+gui.backoffice
+gui.backoffice.components
+gui.backoffice.editorFrames
+gui.backoffice.mainPanels
+gui.backoffice.utils
+gui.frontend
+gui.frontend.components
+gui.frontend.mainPanels
+gui.frontend.services
+gui.frontend.utils
+model
+service

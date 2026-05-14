@@ -8,7 +8,8 @@ import java.time.LocalDate;
  * Une notification est un message destiné à un étudiant ou un administrateur
  * pour l'informer d'un changement dans le système (inscription, confirmation, etc.).
  * 
- * @author Cédric GUIDI && Baptiste DUCROCQ
+ * @author Cédric GUIDI
+ * @author Baptiste DUCROCQ
  * @version 1.0
  */
 public class Notification {

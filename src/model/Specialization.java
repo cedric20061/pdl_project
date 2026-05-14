@@ -6,7 +6,8 @@ package model;
  * Une spécialisation est une discipline académique offerte par un département.
  * Elle est caractérisée par son nom, sa description, un acronyme et un responsable.
  * 
- * @author Cédric GUIDI && Baptiste DUCROCQ
+ * @author Cédric GUIDI
+ * @author Baptiste DUCROCQ
  * @version 1.0
  */
 public class Specialization {

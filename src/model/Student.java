@@ -6,7 +6,8 @@ package model;
  * Un étudiant hérite de la classe User et ajoute des informations spécifiques
  * comme le niveau académique et l'année de promotion.
  * 
- * @author Cédric GUIDI && Baptiste DUCROCQ
+ * @author Cédric GUIDI
+ * @author Baptiste DUCROCQ
  * @version 1.0
  * @see User
  */
