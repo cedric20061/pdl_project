@@ -27,6 +27,7 @@ public class CreateOrEditSession extends JFrame {
     private JComboBox<String> startTimeBox;
     private JComboBox<String> endTimeBox;
     private JTextField capacityField;
+    private JTextField remainingCapacityField;
     private JTextField roomField;
 
     private JComboBox<String> specializationBox;
@@ -96,6 +97,16 @@ public class CreateOrEditSession extends JFrame {
 
         panel.add(capacityLabel);
         panel.add(capacityField);
+        panel.add(Box.createVerticalStrut(10));
+
+        // ==========================
+        // CAPACITÉ RESTANTE
+        // ==========================
+        JLabel remainingLabel = new JLabel("Capacité restante");
+        remainingCapacityField = new JTextField();
+
+        panel.add(remainingLabel);
+        panel.add(remainingCapacityField);
         panel.add(Box.createVerticalStrut(10));
 
         // ==========================
@@ -177,6 +188,7 @@ public class CreateOrEditSession extends JFrame {
             startTimeBox.setSelectedItem(session.getStartTime().toString());
             endTimeBox.setSelectedItem(session.getEndTime().toString());
             capacityField.setText(String.valueOf(session.getMaxCapacity()));
+            remainingCapacityField.setText(String.valueOf(session.getRemainingCapacity()));
             roomField.setText(session.getRoom());
             specializationBox.setSelectedItem(session.getSpecializationName());
             campaignBox.setSelectedItem(session.getCampaignName());
@@ -188,7 +200,42 @@ public class CreateOrEditSession extends JFrame {
         saveButton.addActionListener(this::onSave);
         cancelButton.addActionListener(e -> dispose());
 
+        // Listener pour mettre à jour la capacité restante en temps réel (uniquement en édition)
+        if (session != null) {
+            capacityField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+                public void insertUpdate(javax.swing.event.DocumentEvent e) { updateRemainingCapacity(); }
+                public void removeUpdate(javax.swing.event.DocumentEvent e) { updateRemainingCapacity(); }
+                public void changedUpdate(javax.swing.event.DocumentEvent e) { updateRemainingCapacity(); }
+            });
+        }
+
         add(panel);
+    }
+
+    // ==========================
+    // UPDATE REMAINING CAPACITY (pour affichage temps réel)
+    // ==========================
+    private void updateRemainingCapacity() {
+        try {
+            int newCapacity = Integer.parseInt(capacityField.getText().trim());
+            int oldMaxCapacity = session.getMaxCapacity();
+            int oldRemaining = session.getRemainingCapacity();
+            
+            int newRemaining = oldRemaining + (newCapacity - oldMaxCapacity);
+            
+            // Si capacity est 0, remaining doit être 0
+            if (newCapacity == 0) {
+                newRemaining = 0;
+            }
+            // Éviter les valeurs négatives
+            if (newRemaining < 0) {
+                newRemaining = 0;
+            }
+            
+            remainingCapacityField.setText(String.valueOf(newRemaining));
+        } catch (NumberFormatException ex) {
+            remainingCapacityField.setText("0");
+        }
     }
 
     // ==========================
@@ -318,10 +365,74 @@ public class CreateOrEditSession extends JFrame {
             JOptionPane.showMessageDialog(this, "Session créée !");
         } else {
             // UPDATE
+            // Sauvegarder les anciennes valeurs
+            int oldMaxCapacity = session.getMaxCapacity();
+            int oldRemaining = session.getRemainingCapacity();
+            int currentRegistrations = oldMaxCapacity - oldRemaining;
+            
+            // Récupérer la nouvelle valeur de remaining_capacity saisie par l'utilisateur
+            String remainingStr = remainingCapacityField.getText().trim();
+            int newRemaining;
+            try {
+                newRemaining = Integer.parseInt(remainingStr);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this,
+                    "Capacité restante invalide",
+                    "Erreur",
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            // =====================================
+            // VALIDATIONS
+            // =====================================
+            
+            // 1. Validation: la nouvelle capacité doit être >= au nombre d'inscriptions actuelles
+            if (capacity < currentRegistrations) {
+                JOptionPane.showMessageDialog(this,
+                    "Erreur: La nouvelle capacité max (" + capacity + ") ne peut pas être inférieure " +
+                    "au nombre d'inscriptions actuelles (" + currentRegistrations + ")",
+                    "Capacité insuffisante",
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            // 2. Validation: remaining_capacity <= max_capacity
+            if (newRemaining > capacity) {
+                JOptionPane.showMessageDialog(this,
+                    "Erreur: La capacité restante (" + newRemaining + ") ne peut pas être supérieure " +
+                    "à la capacité max (" + capacity + ")",
+                    "Capacité restante invalide",
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            // 3. Validation: remaining_capacity >= 0
+            if (newRemaining < 0) {
+                JOptionPane.showMessageDialog(this,
+                    "Erreur: La capacité restante ne peut pas être négative",
+                    "Capacité restante invalide",
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            // 4. Validation: remaining_capacity + inscriptions = max_capacity ou cohérent
+            int calculatedRegistrations = capacity - newRemaining;
+            if (calculatedRegistrations < currentRegistrations) {
+                JOptionPane.showMessageDialog(this,
+                    "Erreur: Avec cette capacité restante (" + newRemaining + "), " +
+                    "le nombre d'inscriptions serait " + calculatedRegistrations + " " +
+                    "mais vous en avez actuellement " + currentRegistrations + "",
+                    "Capacité restante invalide",
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
             session.setStartTime(LocalTime.parse(start));
             session.setEndTime(LocalTime.parse(end));
             session.setMaxCapacity(capacity);
-            //TODO géré la mise a jour de remaining capacity en fonction de la mise a jour de la capacité max
+            session.setRemainingCapacity(newRemaining);
+            
             session.setRoom(room);
             session.setSpecializationName(specialization);
             session.setCampaignName(campaign);
@@ -340,7 +451,7 @@ public class CreateOrEditSession extends JFrame {
                     model.setValueAt(start, i, 2);
                     model.setValueAt(end, i, 3);
                     model.setValueAt(capacity, i, 4);
-                    //model.setValueAt(capacity, i, 5); // TODO gérer la mise à jour de la capacité restante
+                    model.setValueAt(session.getRemainingCapacity(), i, 5);
                     model.setValueAt(room, i, 6);
                     model.setValueAt(specialization, i, 7);
                     model.setValueAt(specializationId, i, 8);

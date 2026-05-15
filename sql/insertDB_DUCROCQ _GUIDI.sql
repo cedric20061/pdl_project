@@ -119,109 +119,114 @@ VALUES (DATE '2026-02-01', DATE '2026-02-28', 'CLOSED', 2, 2026, 2002, NULL);
 /* ===================================================== */
 
 /* ===== CAMPAIGN 1 (OPEN) - Sessions variées avec couverture complète des spécialisations ===== */
+/* NOTE: Chevauchements intentionnels d'horaires sur 2026-03-10 matin:
+   - Session 1 (08:30-09:00) + Session 2 (08:30-09:30) = CONFLIT HORAIRE
+   - Session 2 (08:30-09:30) + Session 3 (09:00-09:30) = CONFLIT HORAIRE
+   Ces chevauchements permettent de tester la gestion des conflits d'emploi du temps
+*/
 
 /* Session 1 - ESAA (Spé 1) - 2026-03-10 - 08:30-09:00 - 4 places (SESSION REMPLIE) */
 INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
 VALUES (DATE '2026-03-10', TO_DATE('08:30:00', 'HH24:MI:SS'), TO_DATE('09:00:00', 'HH24:MI:SS'), 4, 0, 'A101', 1, 1, 2000, NULL);
 
-/* Session 2 - ICOM (Spé 2) - 2026-03-10 - 09:00-09:30 */
+/* Session 2 - ICOM (Spé 2) - 2026-03-10 - 08:30-09:30 (CHEVAUCHEMENT avec Session 1) */
 INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
-VALUES (DATE '2026-03-10', TO_DATE('08:30:00', 'HH24:MI:SS'), TO_DATE('09:30:00', 'HH24:MI:SS'), 25, 25, 'A102', 2, 1, 2000, NULL);
+VALUES (DATE '2026-03-10', TO_DATE('08:30:00', 'HH24:MI:SS'), TO_DATE('09:30:00', 'HH24:MI:SS'), 25, 24, 'A102', 2, 1, 2000, NULL);
 
-/* Session 3 - BDTN (Spé 3) - 2026-03-10 - 09:30-10:00 */
+/* Session 3 - BDTN (Spé 3) - 2026-03-10 - 09:00-09:30 (CHEVAUCHEMENT avec Session 2) */
 INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
-VALUES (DATE '2026-03-10', TO_DATE('09:00:00', 'HH24:MI:SS'), TO_DATE('09:30:00', 'HH24:MI:SS'), 30, 30, 'B201', 3, 1, 2000, NULL);
+VALUES (DATE '2026-03-10', TO_DATE('09:00:00', 'HH24:MI:SS'), TO_DATE('09:30:00', 'HH24:MI:SS'), 30, 29, 'B201', 3, 1, 2000, NULL);
 
 /* Session 4 - IA-IR (Spé 4) - 2026-03-10 - 10:00-10:30 */
 INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
-VALUES (DATE '2026-03-10', TO_DATE('10:00:00', 'HH24:MI:SS'), TO_DATE('10:30:00', 'HH24:MI:SS'), 25, 25, 'B202', 4, 1, 2000, NULL);
+VALUES (DATE '2026-03-10', TO_DATE('10:00:00', 'HH24:MI:SS'), TO_DATE('10:30:00', 'HH24:MI:SS'), 25, 24, 'B202', 4, 1, 2000, NULL);
 
 /* Session 5 - CERT (Spé 5) - 2026-03-10 - 10:30-11:00 */
 INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
-VALUES (DATE '2026-03-10', TO_DATE('10:30:00', 'HH24:MI:SS'), TO_DATE('11:00:00', 'HH24:MI:SS'), 20, 20, 'C301', 5, 1, 2000, NULL);
+VALUES (DATE '2026-03-10', TO_DATE('10:30:00', 'HH24:MI:SS'), TO_DATE('11:00:00', 'HH24:MI:SS'), 20, 19, 'C301', 5, 1, 2000, NULL);
 
 /* Session 6 - IA-BD (Spé 6) - 2026-03-10 - 11:00-11:30 */
 INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
-VALUES (DATE '2026-03-10', TO_DATE('11:00:00', 'HH24:MI:SS'), TO_DATE('11:30:00', 'HH24:MI:SS'), 28, 28, 'C302', 6, 1, 2000, NULL);
+VALUES (DATE '2026-03-10', TO_DATE('11:00:00', 'HH24:MI:SS'), TO_DATE('11:30:00', 'HH24:MI:SS'), 28, 27, 'C302', 6, 1, 2000, NULL);
 
 /* Session 7 - ISYMED (Spé 7) - 2026-03-10 - 13:30-14:00 (après midi, pas de conflit) */
 INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
-VALUES (DATE '2026-03-10', TO_DATE('13:30:00', 'HH24:MI:SS'), TO_DATE('14:00:00', 'HH24:MI:SS'), 30, 30, 'D401', 7, 1, 2000, NULL);
+VALUES (DATE '2026-03-10', TO_DATE('13:30:00', 'HH24:MI:SS'), TO_DATE('14:00:00', 'HH24:MI:SS'), 30, 29, 'D401', 7, 1, 2000, NULL);
 
 /* Session 8 - MCTSE (Spé 8) - 2026-03-10 - 14:00-14:30 */
 INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
-VALUES (DATE '2026-03-10', TO_DATE('14:00:00', 'HH24:MI:SS'), TO_DATE('14:30:00', 'HH24:MI:SS'), 22, 22, 'D402', 8, 1, 2000, NULL);
+VALUES (DATE '2026-03-10', TO_DATE('14:00:00', 'HH24:MI:SS'), TO_DATE('14:30:00', 'HH24:MI:SS'), 22, 21, 'D402', 8, 1, 2000, NULL);
 
 /* Session 9 - DARIA (Spé 9) - 2026-03-10 - 14:30-15:00 */
 INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
-VALUES (DATE '2026-03-10', TO_DATE('14:30:00', 'HH24:MI:SS'), TO_DATE('15:00:00', 'HH24:MI:SS'), 25, 25, 'E501', 9, 1, 2000, NULL);
+VALUES (DATE '2026-03-10', TO_DATE('14:30:00', 'HH24:MI:SS'), TO_DATE('15:00:00', 'HH24:MI:SS'), 25, 24, 'E501', 9, 1, 2000, NULL);
 
 /* Session 10 - EDD (Spé 10) - 2026-03-10 - 15:00-15:30 */
 INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
-VALUES (DATE '2026-03-10', TO_DATE('15:00:00', 'HH24:MI:SS'), TO_DATE('15:30:00', 'HH24:MI:SS'), 26, 26, 'E502', 10, 1, 2000, NULL);
+VALUES (DATE '2026-03-10', TO_DATE('15:00:00', 'HH24:MI:SS'), TO_DATE('15:30:00', 'HH24:MI:SS'), 26, 25, 'E502', 10, 1, 2000, NULL);
 
 /* Sessions supplémentaires pour Campaign 1 (jours différents pour éviter conflits) */
 /* Session 11 - ESAA (Spé 1) - 2026-03-11 - 09:00-09:30 */
 INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
-VALUES (DATE '2026-03-11', TO_DATE('09:00:00', 'HH24:MI:SS'), TO_DATE('09:30:00', 'HH24:MI:SS'), 30, 30, 'A103', 1, 1, 2001, NULL);
+VALUES (DATE '2026-03-11', TO_DATE('09:00:00', 'HH24:MI:SS'), TO_DATE('09:30:00', 'HH24:MI:SS'), 30, 29, 'A103', 1, 1, 2001, NULL);
 
 /* Session 12 - ICOM (Spé 2) - 2026-03-11 - 10:00-10:30 */
 INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
-VALUES (DATE '2026-03-11', TO_DATE('10:00:00', 'HH24:MI:SS'), TO_DATE('10:30:00', 'HH24:MI:SS'), 25, 25, 'B203', 2, 1, 2001, NULL);
+VALUES (DATE '2026-03-11', TO_DATE('10:00:00', 'HH24:MI:SS'), TO_DATE('10:30:00', 'HH24:MI:SS'), 25, 24, 'B203', 2, 1, 2001, NULL);
 
 /* Session 13 - BDTN (Spé 3) - 2026-03-11 - 14:00-14:30 */
 INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
-VALUES (DATE '2026-03-11', TO_DATE('14:00:00', 'HH24:MI:SS'), TO_DATE('14:30:00', 'HH24:MI:SS'), 28, 28, 'B204', 3, 1, 2001, NULL);
+VALUES (DATE '2026-03-11', TO_DATE('14:00:00', 'HH24:MI:SS'), TO_DATE('14:30:00', 'HH24:MI:SS'), 28, 27, 'B204', 3, 1, 2001, NULL);
 
 /* Session 14 - IA-BD (Spé 6) - 2026-03-12 - 08:30-09:00 */
 INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
-VALUES (DATE '2026-03-12', TO_DATE('08:30:00', 'HH24:MI:SS'), TO_DATE('09:00:00', 'HH24:MI:SS'), 30, 30, 'C303', 6, 1, 2002, NULL);
+VALUES (DATE '2026-03-12', TO_DATE('08:30:00', 'HH24:MI:SS'), TO_DATE('09:00:00', 'HH24:MI:SS'), 30, 29, 'C303', 6, 1, 2002, NULL);
 
 /* Session 15 - CERT (Spé 5) - 2026-03-12 - 10:30-11:00 */
 INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
-VALUES (DATE '2026-03-12', TO_DATE('10:30:00', 'HH24:MI:SS'), TO_DATE('11:00:00', 'HH24:MI:SS'), 24, 24, 'C304', 5, 1, 2002, NULL);
+VALUES (DATE '2026-03-12', TO_DATE('10:30:00', 'HH24:MI:SS'), TO_DATE('11:00:00', 'HH24:MI:SS'), 24, 23, 'C304', 5, 1, 2002, NULL);
 
 
 /* ===== CAMPAIGN 2 (PLANNED) - Sessions pour la campagne planifiée ===== */
 
 /* Session 16 - ESAA (Spé 1) - 2026-04-05 - 08:30-09:00 */
 INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
-VALUES (DATE '2026-04-05', TO_DATE('08:30:00', 'HH24:MI:SS'), TO_DATE('09:00:00', 'HH24:MI:SS'), 30, 30, 'A201', 1, 2, 2000, NULL);
+VALUES (DATE '2026-04-05', TO_DATE('08:30:00', 'HH24:MI:SS'), TO_DATE('09:00:00', 'HH24:MI:SS'), 30, 29, 'A201', 1, 2, 2000, NULL);
 
 /* Session 17 - ICOM (Spé 2) - 2026-04-05 - 09:30-10:00 */
 INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
-VALUES (DATE '2026-04-05', TO_DATE('09:30:00', 'HH24:MI:SS'), TO_DATE('10:00:00', 'HH24:MI:SS'), 28, 28, 'B301', 2, 2, 2000, NULL);
+VALUES (DATE '2026-04-05', TO_DATE('09:30:00', 'HH24:MI:SS'), TO_DATE('10:00:00', 'HH24:MI:SS'), 28, 27, 'B301', 2, 2, 2000, NULL);
 
 /* Session 18 - BDTN (Spé 3) - 2026-04-05 - 13:30-14:00 */
 INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
-VALUES (DATE '2026-04-05', TO_DATE('13:30:00', 'HH24:MI:SS'), TO_DATE('14:00:00', 'HH24:MI:SS'), 30, 30, 'B302', 3, 2, 2000, NULL);
+VALUES (DATE '2026-04-05', TO_DATE('13:30:00', 'HH24:MI:SS'), TO_DATE('14:00:00', 'HH24:MI:SS'), 30, 29, 'B302', 3, 2, 2000, NULL);
 
 /* Session 19 - IA-IR (Spé 4) - 2026-04-06 - 10:00-10:30 */
 INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
-VALUES (DATE '2026-04-06', TO_DATE('10:00:00', 'HH24:MI:SS'), TO_DATE('10:30:00', 'HH24:MI:SS'), 25, 25, 'C401', 4, 2, 2001, NULL);
+VALUES (DATE '2026-04-06', TO_DATE('10:00:00', 'HH24:MI:SS'), TO_DATE('10:30:00', 'HH24:MI:SS'), 25, 24, 'C401', 4, 2, 2001, NULL);
 
 /* Session 20 - CERT (Spé 5) - 2026-04-06 - 14:00-14:30 */
 INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
-VALUES (DATE '2026-04-06', TO_DATE('14:00:00', 'HH24:MI:SS'), TO_DATE('14:30:00', 'HH24:MI:SS'), 22, 22, 'D501', 5, 2, 2001, NULL);
+VALUES (DATE '2026-04-06', TO_DATE('14:00:00', 'HH24:MI:SS'), TO_DATE('14:30:00', 'HH24:MI:SS'), 22, 21, 'D501', 5, 2, 2001, NULL);
 
 /* Session 21 - IA-BD (Spé 6) - 2026-04-06 - 15:30-16:00 */
 INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
-VALUES (DATE '2026-04-06', TO_DATE('15:30:00', 'HH24:MI:SS'), TO_DATE('16:00:00', 'HH24:MI:SS'), 27, 27, 'E601', 6, 2, 2001, NULL);
+VALUES (DATE '2026-04-06', TO_DATE('15:30:00', 'HH24:MI:SS'), TO_DATE('16:00:00', 'HH24:MI:SS'), 27, 26, 'E601', 6, 2, 2001, NULL);
 
 
 /* ===== CAMPAIGN 3 (CLOSED) - Sessions de la campagne fermée (toutes les inscriptions acceptées) ===== */
 
 /* Session 22 - ESAA (Spé 1) - 2026-02-10 - 08:30-09:00 */
 INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
-VALUES (DATE '2026-02-10', TO_DATE('08:30:00', 'HH24:MI:SS'), TO_DATE('09:00:00', 'HH24:MI:SS'), 30, 30, 'F101', 1, 3, 2002, NULL);
+VALUES (DATE '2026-02-10', TO_DATE('08:30:00', 'HH24:MI:SS'), TO_DATE('09:00:00', 'HH24:MI:SS'), 30, 28, 'F101', 1, 3, 2002, NULL);
 
 /* Session 23 - ICOM (Spé 2) - 2026-02-10 - 09:30-10:00 */
 INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
-VALUES (DATE '2026-02-10', TO_DATE('09:30:00', 'HH24:MI:SS'), TO_DATE('10:00:00', 'HH24:MI:SS'), 25, 25, 'F102', 2, 3, 2002, NULL);
+VALUES (DATE '2026-02-10', TO_DATE('09:30:00', 'HH24:MI:SS'), TO_DATE('10:00:00', 'HH24:MI:SS'), 25, 24, 'F102', 2, 3, 2002, NULL);
 
 /* Session 24 - BDTN (Spé 3) - 2026-02-10 - 14:00-14:30 */
 INSERT INTO SESSIONS (session_date, start_time, end_time, max_capacity, remaining_capacity, room, specialization_id, campaign_id, created_by, modified_by)
-VALUES (DATE '2026-02-10', TO_DATE('14:00:00', 'HH24:MI:SS'), TO_DATE('14:30:00', 'HH24:MI:SS'), 28, 28, 'G201', 3, 3, 2002, NULL);
+VALUES (DATE '2026-02-10', TO_DATE('14:00:00', 'HH24:MI:SS'), TO_DATE('14:30:00', 'HH24:MI:SS'), 28, 27, 'G201', 3, 3, 2002, NULL);
 
 
 /* ===================================================== */
