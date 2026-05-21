@@ -530,6 +530,57 @@ public class RegistrationDAO extends ConnectionDAO {
     }
 
     // ==========================
+    // FIND BY CAMPAIGN AND STATUS
+    // ==========================
+    /**
+     * Récupère toutes les inscriptions d'une campagne avec un statut donné.
+     * Utilisé notamment pour valider si une campagne peut être archivée
+     * (il ne doit pas rester d'inscriptions PENDING).
+     * 
+     * @param campaignId L'ID de la campagne
+     * @param status Le statut à chercher (PENDING, CONFIRMED, VALIDATED, REJECTED, ACCEPTED)
+     * @return ArrayList des inscriptions correspondantes, ou null en cas d'erreur
+     */
+    public ArrayList<Registration> findByCampaignAndStatus(int campaignId, String status) {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        ArrayList<Registration> list = new ArrayList<>();
+
+        try {
+            con = DriverManager.getConnection(URL, LOGIN, PASS);
+
+            // Requête qui récupère les inscriptions de sessions liées à la campagne
+            // avec le statut spécifié
+            String sql = "SELECT r.session_id, r.student_id, s.first_name || ' ' || s.last_name AS student_name, " +
+                        "s.email AS student_email, r.preference_rank, r.status " +
+                        "FROM REGISTRATION r " +
+                        "INNER JOIN SESSIONS se ON r.session_id = se.session_id " +
+                        "INNER JOIN STUDENT s ON r.student_id = s.student_id " +
+                        "WHERE se.campaign_id = ? AND r.status = ?";
+
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, campaignId);
+            ps.setString(2, status);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                list.add(map(rs));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            try { if (rs != null) rs.close(); } catch (Exception ignored) {}
+            try { if (ps != null) ps.close(); } catch (Exception ignored) {}
+            try { if (con != null) con.close(); } catch (Exception ignored) {}
+        }
+
+        return list;
+    }
+
+    // ==========================
     // MAPPING
     // ==========================
     private Registration map(ResultSet rs) throws SQLException {

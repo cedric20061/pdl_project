@@ -319,7 +319,7 @@ public class CampaignDAO extends ConnectionDAO {
         ArrayList<Campaign> active = new ArrayList<>();
 
         for (Campaign c : allCampaigns) {
-            if ("OPEN".equals(c.getStatus())) {
+            if ("OPEN".equals(c.getStatus()) || "PLANNED".equals(c.getStatus())) {
                 active.add(c);
             }
         }
