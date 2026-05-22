@@ -141,8 +141,8 @@ public class ValidateRegistrationsDialog extends JDialog {
         ArrayList<Campaign> allCampaigns = campaignDAO.getList();
         
         for (Campaign camp : allCampaigns) {
-            // Keep only OPEN and PLANNED campaigns
-            if ("OPEN".equals(camp.getStatus()) || "PLANNED".equals(camp.getStatus())) {
+            // Keep only OPEN, PLANNED AND CLOSED campaigns
+            if ("OPEN".equals(camp.getStatus()) || "PLANNED".equals(camp.getStatus()) || "CLOSED".equals(camp.getStatus())) {
                 activeCampaigns.add(camp);
                 String displayName = "Campagne #" + camp.getId() + " (" + camp.getStatus() + ")";
                 campaignCombo.addItem(displayName);
@@ -174,6 +174,20 @@ public class ValidateRegistrationsDialog extends JDialog {
             JOptionPane.showMessageDialog(this, 
                 "Erreur lors de la sélection de la campagne", 
                 "Erreur", 
+                JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // ==========================
+        // CHECK: Campaign must be CLOSED
+        // ==========================
+        Campaign campaign = campaignDAO.get(campaignId);
+        if (campaign == null || !"CLOSED".equals(campaign.getStatus())) {
+            String status = (campaign != null) ? campaign.getStatus() : "UNKNOWN";
+            JOptionPane.showMessageDialog(this, 
+                "Le traitement automatique ne peut être lancé que pour une campagne CLOSED.\n" +
+                "Statut actuel: " + status,
+                "Traitement impossible", 
                 JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -243,6 +257,26 @@ public class ValidateRegistrationsDialog extends JDialog {
             if (hasConflict) {
                 report.append(studentName).append(": CONFLIT D'HORAIRE\n");
                 report.append("   ").append(conflictDetails).append("\n");
+                
+                // Find registration with best preference rank (lowest number = best rank)
+                Registration bestRank = studentRegs.get(0);
+                for (Registration reg : studentRegs) {
+                    if (reg.getRank() < bestRank.getRank()) {
+                        bestRank = reg;
+                    }
+                }
+                
+                // Validate the one with best rank, reject all others
+                for (Registration reg : studentRegs) {
+                    if (reg.getRank() == bestRank.getRank()) {
+                        registrationDAO.updateStatus(reg.getStudentId(), reg.getSessionId(), "ACCEPTED");
+                        validatedCount++;
+                        report.append("   ✓ Inscriptions conservée: rang ").append(reg.getRank()).append("\n");
+                    } else {
+                        registrationDAO.updateStatus(reg.getStudentId(), reg.getSessionId(), "REJECTED");
+                        report.append("   ✗ Inscription rejetée: rang ").append(reg.getRank()).append("\n");
+                    }
+                }
                 conflictCount++;
             } else {
                 // No conflicts - validate all registrations

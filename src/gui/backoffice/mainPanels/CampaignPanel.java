@@ -82,7 +82,7 @@ public class CampaignPanel extends JPanel {
 
         // 📌 Status
         statusCombo = new JComboBox<>(
-            new String[]{"ALL", "OPEN", "CLOSED", "VALIDATED", "PLANNED"}
+            new String[]{"ALL", "OPEN", "CLOSED", "PLANNED", "ARCHIVED"}
         );
         UIStyle.styleComboBox(statusCombo, 150);
 
@@ -199,7 +199,7 @@ public class CampaignPanel extends JPanel {
                     String status = table.getValueAt(row, 3).toString();
                     int maxChoices = (int) table.getValueAt(row, 4);
                     int promotion = (int) table.getValueAt(row, 5);
-                    String createdBy = table.getValueAt(row, 6).toString();
+                    String createdBy = table.getValueAt(row, 6) != null ? table.getValueAt(row, 6).toString() : null;
                     String modifiedBy = (table.getValueAt(row, 7) != null) ? table.getValueAt(row, 7).toString() : null;
 
                     Campaign camp = new Campaign(id, status, startDate, endDate, maxChoices, promotion, createdBy, modifiedBy);

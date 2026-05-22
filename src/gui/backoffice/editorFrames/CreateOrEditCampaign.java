@@ -4,7 +4,9 @@ import com.toedter.calendar.JDateChooser;
 
 import common.components.app.UIStyle;
 import dao.CampaignDAO;
+import dao.RegistrationDAO;
 import model.Campaign;
+import model.Registration;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -15,6 +17,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -66,7 +69,7 @@ public class CreateOrEditCampaign extends JFrame {
         // ==========================
         // Status
         // ==========================
-        String[] statuses = {"OPEN", "CLOSED", "VALIDATED", "PLANNED"};
+        String[] statuses = {"OPEN", "CLOSED", "PLANNED", "ARCHIVED"};
         statusCombo = new JComboBox<>(statuses);
 
         panel.add(Box.createVerticalStrut(10));
@@ -240,6 +243,27 @@ public class CreateOrEditCampaign extends JFrame {
                 campaign.setStartDate(startLocalDate);
                 campaign.setEndDate(endLocalDate);
             }
+
+            // ==========================
+            // VALIDATION: Archivage
+            // ==========================
+            // Si passage au statut ARCHIVED, vérifier qu'il n'y a pas d'inscriptions PENDING
+            String currentStatus = campaign.getStatus();
+            if ("ARCHIVED".equals(status) && !"ARCHIVED".equals(currentStatus)) {
+                // Vérifier s'il existe des inscriptions PENDING pour cette campagne
+                RegistrationDAO regDAO = new RegistrationDAO();
+                ArrayList<Registration> pendingRegs = regDAO.findByCampaignAndStatus(campaign.getId(), "PENDING");
+                
+                if (pendingRegs != null && !pendingRegs.isEmpty()) {
+                    JOptionPane.showMessageDialog(this,
+                        "Impossible d'archiver la campagne:\n" +
+                        "Il reste " + pendingRegs.size() + " inscription(s) en attente de validation (PENDING)",
+                        "Archivage impossible",
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
+
             campaign.setStatus(status);
             campaign.setMaxChoices(maxChoices);
             campaign.setPromotion(promotion);

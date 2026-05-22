@@ -149,8 +149,11 @@ public class CreateOrEditSession extends JFrame {
         ArrayList<Campaign> campaigns = campDAO.getList();
         ArrayList<String> campNames = new ArrayList<>();
         campNames.add("ALL");
+        // Filtrer les campagnes archivées - on ne peut créer une session que pour une campagne non archivée
         for (Campaign camp : campaigns) {
-            campNames.add(camp.toString());
+            if (!"ARCHIVED".equals(camp.getStatus())) {
+                campNames.add(camp.toString());
+            }
         }
 
         campaignBox = new JComboBox<>(campNames.toArray(new String[0]));
@@ -291,6 +294,26 @@ public class CreateOrEditSession extends JFrame {
             JOptionPane.showMessageDialog(this,
                 "L'heure de fin doit être après l'heure de début",
                 "Erreur",
+                JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        // ==========================
+        // CHECK PAUSE 12:30-13:30
+        // ==========================
+        // Vérifier si la session chevauche la pause de midi
+        LocalTime breakStart = LocalTime.of(12, 30);
+        LocalTime breakEnd = LocalTime.of(13, 30);
+        LocalTime sessionStart = LocalTime.parse(start);
+        LocalTime sessionEnd = LocalTime.parse(end);
+        
+        // La session ne doit pas chevaucher la pause
+        if ((sessionStart.isBefore(breakEnd) && sessionEnd.isAfter(breakStart)) ||
+            sessionStart.equals(breakStart) || sessionEnd.equals(breakEnd)) {
+            JOptionPane.showMessageDialog(this,
+                "La session ne peut pas chevaucher la pause de midi (12:30-13:30)\n" +
+                "Choisissez une heure avant 12:30 ou après 13:30",
+                "Conflit avec la pause",
                 JOptionPane.ERROR_MESSAGE);
             return;
         }
