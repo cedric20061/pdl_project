@@ -4,9 +4,11 @@ import java.awt.*;
 import javax.swing.*;
 
 import common.components.app.UIStyle;
+import model.Campaign;
 import model.Registration;
 import model.Session;
 import model.Student;
+import dao.CampaignDAO;
 import dao.RegistrationDAO;
 
 /**
@@ -155,12 +157,30 @@ public class StudentRegistrationCard extends JPanel {
         btn.setFocusPainted(false);
         btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-        // Disable cancel button if status is ACCEPTED
+        // ==========================
+        // CHECK 1: Status is ACCEPTED
+        // ==========================
         if ("ACCEPTED".equals(registration.getStatus())) {
             btn.setEnabled(false);
             btn.setForeground(new Color(150, 150, 150));
             btn.setText("Validée");
             btn.setToolTipText("Cette inscription est validée et ne peut pas être annulée");
+        } 
+        // ==========================
+        // CHECK 2: Campaign status (must be OPEN or PLANNED)
+        // ==========================
+        else if (session != null) {
+            CampaignDAO campaignDAO = new CampaignDAO();
+            Campaign campaign = campaignDAO.get(session.getCampaignId());
+            
+            if (campaign != null && !"OPEN".equals(campaign.getStatus()) && !"PLANNED".equals(campaign.getStatus())) {
+                btn.setEnabled(false);
+                btn.setForeground(new Color(150, 150, 150));
+                btn.setText("Modifiée impossible");
+                btn.setToolTipText("Cette campagne (" + campaign.getStatus() + ") ne permet plus les modifications");
+            } else {
+                btn.addActionListener(e -> cancelRegistration());
+            }
         } else {
             btn.addActionListener(e -> cancelRegistration());
         }

@@ -173,8 +173,27 @@ public class SessionDetailsDialog extends JDialog {
             alreadyRegisteredLabel.setForeground(new Color(76, 175, 80));
             panel.add(alreadyRegisteredLabel);
         } else {
-            // Check for schedule conflicts
-            boolean hasConflict = filterService.checkScheduleConflict(student.getId(), session);
+            // ==========================
+            // CHECK: Campaign status (ARCHIVED)
+            // ==========================
+            CampaignDAO campaignDAO = new CampaignDAO();
+            Campaign campaign = campaignDAO.get(session.getCampaignId());
+            
+            if (campaign != null && "ARCHIVED".equals(campaign.getStatus())) {
+                JTextArea archivedMsgArea = new JTextArea("Cette campagne est archivée.\nLes inscriptions pour cette campagne ne sont plus possibles.");
+                archivedMsgArea.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+                archivedMsgArea.setForeground(new Color(220, 53, 69));
+                archivedMsgArea.setBackground(new Color(255, 240, 245));
+                archivedMsgArea.setBorder(BorderFactory.createLineBorder(new Color(220, 53, 69)));
+                archivedMsgArea.setLineWrap(true);
+                archivedMsgArea.setWrapStyleWord(true);
+                archivedMsgArea.setEditable(false);
+                archivedMsgArea.setOpaque(true);
+                archivedMsgArea.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
+                panel.add(archivedMsgArea);
+            } else {
+                // Check for schedule conflicts
+                boolean hasConflict = filterService.checkScheduleConflict(student.getId(), session);
             
             if (hasConflict) {
                 // Display conflict message
@@ -195,10 +214,6 @@ public class SessionDetailsDialog extends JDialog {
             } else {
                 // Get campaign info for max_choices validation
                 ArrayList<Registration> sameCampaignRegs = registrationDAO.findByStudentAndCampaign(student.getId(), session.getCampaignId());
-                
-                // Get campaign to check max_choices
-                CampaignDAO campaignDAO = new CampaignDAO();
-                Campaign campaign = campaignDAO.get(session.getCampaignId());
                 
                 int maxChoices = campaign != null ? campaign.getMaxChoices() : 10;
                 int currentChoices = sameCampaignRegs.size();
@@ -258,6 +273,7 @@ public class SessionDetailsDialog extends JDialog {
                     panel.add(Box.createVerticalStrut(10));
                     panel.add(registerButton);
                 }
+            }
             }
         }
 
